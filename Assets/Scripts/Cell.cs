@@ -32,15 +32,23 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public static void setOutlineAll(List<Cell> cells, string color)
+    public static void setOutlineAll(IEnumerable<Cell> cells, string color)
     {
         foreach (Cell cell in cells)
             cell.setOutline(color);
     }
 
-    public void setOutline(string color)
+    public static void clearOutlineAll(IEnumerable<Cell> cells)
     {
-        this.mOutlineImage.enabled = true;
+        setOutlineAll(cells, "clear");
+    }
+
+    public void setOutline(string color)
+    {  // TODO
+        if (color.Equals("clear"))
+            this.mOutlineImage.enabled = false;
+        else
+            this.mOutlineImage.enabled = true;
     }
 
     public void setOverlay()

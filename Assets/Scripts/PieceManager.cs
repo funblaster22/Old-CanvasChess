@@ -14,6 +14,13 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> mPromotedPieces = new List<BasePiece>();
     private Cell[,] cells;
 
+    [HideInInspector]
+    public HashSet<Cell> allPossibleMoves = new HashSet<Cell>();  // Only applies to current player
+    public HashSet<Cell> allDefendedCells = new HashSet<Cell>();
+    public HashSet<Cell> whiteAttackedCells = new HashSet<Cell>();
+    public HashSet<Cell> blackAttackedCells = new HashSet<Cell>();
+    public HashSet<Cell> allPinnedCells = new HashSet<Cell>();
+
     private string[] mPieceOrder = new string[16]
     {
         "P", "P", "P", "P", "P", "P", "P", "P",
@@ -149,7 +156,8 @@ public class PieceManager : MonoBehaviour
         // Disable this so player can't move pieces
         SetInteractive(mBlackPieces, isBlackTurn);
 
-        Cell.setOutlineAll(FindDanger(isBlackTurn), "red");
+        // Show assist overlay
+        ShowAssist(isBlackTurn);
 
         // Set promoted interactivity
         foreach (BasePiece piece in mPromotedPieces)
@@ -167,26 +175,27 @@ public class PieceManager : MonoBehaviour
         */
     }
 
-    private List<Cell> FindDanger(bool isBlackTurn)
+    private void ShowAssist(bool isBlackTurn)
     {
-        List<Cell> danger = new List<Cell>();
-        foreach (BasePiece cell in (isBlackTurn ? mBlackPieces : mWhitePieces))
-        {
-            //TODO: cell.mHighlightedCells
-        }
-        return danger;
-    }
+        Cell.clearOutlineAll(allPossibleMoves);
+        Cell.clearOutlineAll(allDefendedCells);
+        Cell.clearOutlineAll(whiteAttackedCells);
+        Cell.clearOutlineAll(blackAttackedCells);
+        Cell.clearOutlineAll(allPinnedCells);
+        allPossibleMoves.Clear();
+        allDefendedCells.Clear();
+        whiteAttackedCells.Clear();
+        blackAttackedCells.Clear();
+        allPinnedCells.Clear();
 
-    private List<Cell> FindDefended(bool isBlackTurn)
-    {
-        List<Cell> defended = new List<Cell>();
-        return defended;
-    }
+        foreach (BasePiece piece in mWhitePieces)
+            piece.OnTurnStart();
+        foreach (BasePiece piece in mBlackPieces)
+            piece.OnTurnStart();
+        foreach (BasePiece piece in (isBlackTurn ? mBlackPieces : mWhitePieces))  // Find all possible moves
+            allPossibleMoves.UnionWith(piece.mHighlightedCells);
 
-    private List<Cell> FindPinned(bool isBlackTurn)
-    {
-        List<Cell> pinned = new List<Cell>();
-        return pinned;
+        Cell.setOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, "red");
     }
 
     public void ResetPieces()

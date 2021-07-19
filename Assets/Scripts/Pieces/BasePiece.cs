@@ -8,6 +8,7 @@ public abstract class BasePiece : EventTrigger
     [HideInInspector]
     public Color mColor = Color.clear;
     public bool mIsFirstMove = true;
+    public List<Cell> mHighlightedCells = new List<Cell>();
 
     protected Cell mOriginalCell = null;
     protected Cell mCurrentCell = null;
@@ -18,10 +19,6 @@ public abstract class BasePiece : EventTrigger
     protected Cell mTargetCell = null;
 
     protected Vector3Int mMovement = Vector3Int.one;
-    protected List<Cell> mHighlightedCells = new List<Cell>();
-    protected List<Cell> friendlyCells = new List<Cell>();
-    protected List<Cell> enemyCells = new List<Cell>();
-    protected List<Cell> pinnedCells = new List<Cell>();
 
     public virtual void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
@@ -108,7 +105,8 @@ public abstract class BasePiece : EventTrigger
             if (cellState == CellState.Enemy)
             {
                 mHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
-                enemyCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells)
+                    .Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
                 // Check for pieces that are pinned behind this one
                 while (i <= movement)
                 {
@@ -119,7 +117,7 @@ public abstract class BasePiece : EventTrigger
                     if (cellState == CellState.Enemy)
                     {
                         // TODO: only mark as pinned if 2nd piece is undefended & not a pawn
-                        pinnedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                        mPieceManager.allPinnedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
                         break;
                     }
                     i++;
@@ -130,14 +128,7 @@ public abstract class BasePiece : EventTrigger
             // If friendly, add to list, break
             if (cellState == CellState.Friendly)
             {
-                friendlyCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
-                break;
-            }
-
-            // If friendly, add to list, break
-            if (cellState == CellState.Friendly)
-            {
-                friendlyCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                mPieceManager.allDefendedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
                 break;
             }
 
@@ -152,11 +143,6 @@ public abstract class BasePiece : EventTrigger
 
     protected virtual void CheckPathing()
     {
-        mHighlightedCells.Clear();  // TODO: maybe?
-        friendlyCells.Clear();
-        enemyCells.Clear();
-        pinnedCells.Clear();
-
         // Horizontal
         CreateCellPath(1, 0, mMovement.x);
         CreateCellPath(-1, 0, mMovement.x);
@@ -267,6 +253,16 @@ public abstract class BasePiece : EventTrigger
 
         // End turn
         mPieceManager.SwitchSides(mColor);
+    }
+
+    public void OnTurnStart()
+    {
+        CheckPathing();
+    }
+
+    public void OnTurnEnd()
+    {
+
     }
     #endregion
 }
