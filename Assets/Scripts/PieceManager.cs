@@ -12,6 +12,7 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> mWhitePieces = null;
     private List<BasePiece> mBlackPieces = null;
     private List<BasePiece> mPromotedPieces = new List<BasePiece>();
+    private Cell[,] cells;
 
     private string[] mPieceOrder = new string[16]
     {
@@ -31,6 +32,8 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
+        cells = board.mAllCells;
+
         // Create white pieces
         mWhitePieces = CreatePieces(Color.white, new Color32(80, 124, 159, 255));
 
@@ -146,6 +149,8 @@ public class PieceManager : MonoBehaviour
         // Disable this so player can't move pieces
         SetInteractive(mBlackPieces, isBlackTurn);
 
+        Cell.setOutlineAll(FindDanger(isBlackTurn), "red");
+
         // Set promoted interactivity
         foreach (BasePiece piece in mPromotedPieces)
         {
@@ -160,6 +165,28 @@ public class PieceManager : MonoBehaviour
         if (isBlackTurn)
             MoveRandomPiece();
         */
+    }
+
+    private List<Cell> FindDanger(bool isBlackTurn)
+    {
+        List<Cell> danger = new List<Cell>();
+        foreach (BasePiece cell in (isBlackTurn ? mBlackPieces : mWhitePieces))
+        {
+            //TODO: cell.mHighlightedCells
+        }
+        return danger;
+    }
+
+    private List<Cell> FindDefended(bool isBlackTurn)
+    {
+        List<Cell> defended = new List<Cell>();
+        return defended;
+    }
+
+    private List<Cell> FindPinned(bool isBlackTurn)
+    {
+        List<Cell> pinned = new List<Cell>();
+        return pinned;
     }
 
     public void ResetPieces()

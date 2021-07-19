@@ -19,6 +19,9 @@ public abstract class BasePiece : EventTrigger
 
     protected Vector3Int mMovement = Vector3Int.one;
     protected List<Cell> mHighlightedCells = new List<Cell>();
+    protected List<Cell> friendlyCells = new List<Cell>();
+    protected List<Cell> enemyCells = new List<Cell>();
+    protected List<Cell> pinnedCells = new List<Cell>();
 
     public virtual void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
@@ -105,6 +108,36 @@ public abstract class BasePiece : EventTrigger
             if (cellState == CellState.Enemy)
             {
                 mHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                enemyCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                // Check for pieces that are pinned behind this one
+                while (i <= movement)
+                {
+                    currentX += xDirection;
+                    currentY += yDirection;
+                    cellState = mCurrentCell.mBoard.ValidateCell(currentX, currentY, this);
+                    if (cellState == CellState.OutOfBounds) break;
+                    if (cellState == CellState.Enemy)
+                    {
+                        // TODO: only mark as pinned if 2nd piece is undefended & not a pawn
+                        pinnedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                        break;
+                    }
+                    i++;
+                }
+                break;
+            }
+
+            // If friendly, add to list, break
+            if (cellState == CellState.Friendly)
+            {
+                friendlyCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                break;
+            }
+
+            // If friendly, add to list, break
+            if (cellState == CellState.Friendly)
+            {
+                friendlyCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
                 break;
             }
 
@@ -119,6 +152,11 @@ public abstract class BasePiece : EventTrigger
 
     protected virtual void CheckPathing()
     {
+        mHighlightedCells.Clear();  // TODO: maybe?
+        friendlyCells.Clear();
+        enemyCells.Clear();
+        pinnedCells.Clear();
+
         // Horizontal
         CreateCellPath(1, 0, mMovement.x);
         CreateCellPath(-1, 0, mMovement.x);
@@ -136,6 +174,11 @@ public abstract class BasePiece : EventTrigger
         CreateCellPath(1, -1, mMovement.z);
     }
 
+    /*public static List<Cell> CheckPathing(Color color, int currentX, int currentY)
+    {
+
+    }TODO*/
+
     protected void ShowCells()
     {
         foreach (Cell cell in mHighlightedCells)
@@ -147,7 +190,7 @@ public abstract class BasePiece : EventTrigger
         foreach (Cell cell in mHighlightedCells)
             cell.mOutlineImage.enabled = false;
 
-        mHighlightedCells.Clear();
+        // TODO: make sure this doesn't mess anything up mHighlightedCells.Clear();
     }
 
     protected virtual void Move()

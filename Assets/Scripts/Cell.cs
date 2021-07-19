@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Cell : MonoBehaviour
@@ -29,5 +30,21 @@ public class Cell : MonoBehaviour
         {
             mCurrentPiece.Kill();
         }
+    }
+
+    public static void setOutlineAll(List<Cell> cells, string color)
+    {
+        foreach (Cell cell in cells)
+            cell.setOutline(color);
+    }
+
+    public void setOutline(string color)
+    {
+        this.mOutlineImage.enabled = true;
+    }
+
+    public void setOverlay()
+    {
+
     }
 }
