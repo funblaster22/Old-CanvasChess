@@ -190,7 +190,7 @@ public abstract class BasePiece : EventTrigger
         foreach (Cell cell in mHighlightedCells)
             cell.mOutlineImage.enabled = false;
 
-        // TODO: make sure this doesn't mess anything up mHighlightedCells.Clear();
+        mHighlightedCells.Clear();
     }
 
     protected virtual void Move()
