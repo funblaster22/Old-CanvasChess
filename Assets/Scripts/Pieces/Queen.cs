@@ -3,6 +3,10 @@ using UnityEngine.UI;
 
 public class Queen : BasePiece
 {
+    public override int Value {
+        get { return 9; }
+    }
+
     public override void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
         // Base setup

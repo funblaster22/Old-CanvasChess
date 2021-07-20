@@ -6,6 +6,10 @@ public class King : BasePiece
     private Rook mLeftRook = null;
     private Rook mRightRook = null;
 
+    public override int Value {
+        get { return 10; }
+    }
+
     public override void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
         // Base setup

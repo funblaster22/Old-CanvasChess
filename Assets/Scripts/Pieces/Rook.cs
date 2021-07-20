@@ -3,6 +3,10 @@ using UnityEngine.UI;
 
 public class Rook : BasePiece
 {
+    public override int Value {
+        get { return 5; }
+    }
+
     [HideInInspector]
     public Cell mCastleTriggerCell = null;
     private Cell mCastleCell = null;

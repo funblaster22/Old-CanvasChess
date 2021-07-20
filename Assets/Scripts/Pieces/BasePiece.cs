@@ -9,6 +9,7 @@ public abstract class BasePiece : EventTrigger
     public Color mColor = Color.clear;
     public bool mIsFirstMove = true;
     public List<Cell> mHighlightedCells = new List<Cell>();
+    abstract public int Value { get; }
 
     protected Cell mOriginalCell = null;
     protected Cell mCurrentCell = null;

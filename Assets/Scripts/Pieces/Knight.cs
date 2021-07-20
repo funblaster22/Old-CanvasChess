@@ -3,6 +3,10 @@ using UnityEngine.UI;
 
 public class Knight : BasePiece
 {
+    public override int Value {
+        get { return 3; }
+    }
+
     public override void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
         // Base setup
