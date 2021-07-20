@@ -27,7 +27,7 @@ public class King : BasePiece
         mPieceManager.mIsKingAlive = false;
     }
 
-    protected override void CheckPathing()
+    public override void CheckPathing()
     {
         // Normal pathing
         base.CheckPathing();

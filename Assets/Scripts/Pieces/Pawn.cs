@@ -28,11 +28,20 @@ public class Pawn : BasePiece
     {
         CellState cellState = CellState.None;
         cellState = mCurrentCell.mBoard.ValidateCell(targetX, targetY, this);
-
-        if (cellState == targetState)
+        if (cellState != CellState.OutOfBounds)
         {
-            mHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[targetX, targetY]);
-            return true;
+            Cell cell = mCurrentCell.mBoard.mAllCells[targetX, targetY];
+
+            if (targetState == CellState.Enemy) {  // When checking corners
+                if (cellState == CellState.Friendly)  // Is defended
+                    mPieceManager.allDefendedCells.Add(cell);
+                else if (cellState == CellState.Enemy)  // Is attacking
+                    (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells).Add(cell);
+            }
+            if (cellState == targetState) {
+                mHighlightedCells.Add(cell);
+                return true;
+            }
         }
 
         return false;
@@ -54,8 +63,10 @@ public class Pawn : BasePiece
         }
     }
 
-    protected override void CheckPathing()
+    public override void CheckPathing()
     {
+        mHighlightedCells.Clear();
+
         // Target position
         int currentX = mCurrentCell.mBoardPosition.x;
         int currentY = mCurrentCell.mBoardPosition.y;

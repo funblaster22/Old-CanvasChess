@@ -36,8 +36,10 @@ public class Knight : BasePiece
     }
 
     // New
-    protected override void CheckPathing()
+    public override void CheckPathing()
     {
+        mHighlightedCells.Clear();
+
         // Draw top half
         CreateCellPath(1);
 
@@ -50,8 +52,18 @@ public class Knight : BasePiece
     {
         CellState cellState = CellState.None;
         cellState = mCurrentCell.mBoard.ValidateCell(targetX, targetY, this);
+        if (cellState != CellState.OutOfBounds)
+        {
+            Cell cell = mCurrentCell.mBoard.mAllCells[targetX, targetY];
 
-        if (cellState != CellState.Friendly && cellState != CellState.OutOfBounds)
-            mHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[targetX, targetY]);
+            if (cellState == CellState.Friendly)  // Is defended
+                mPieceManager.allDefendedCells.Add(cell);
+            else  // Is a legal move
+            {
+                if (cellState == CellState.Enemy)  // Is attacking
+                    (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells).Add(cell);
+                mHighlightedCells.Add(cell);
+            }
+        }
     }
 }

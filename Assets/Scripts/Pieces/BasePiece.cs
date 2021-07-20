@@ -117,8 +117,12 @@ public abstract class BasePiece : EventTrigger
                     if (cellState == CellState.OutOfBounds) break;
                     if (cellState == CellState.Enemy)
                     {
-                        // TODO: only mark as pinned if 2nd piece is undefended & not a pawn
-                        mPieceManager.allPinnedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                        Cell cell = mCurrentCell.mBoard.mAllCells[currentX, currentY];
+                        if (cell.mCurrentPiece.Value > 1)  // Only mark as pinned if 2nd piece is not a pawn
+                        {
+                            // TODO: only mark as pinned if 2nd piece is undefended
+                            mPieceManager.allPinnedCells.Add(cell);
+                        }
                         break;
                     }
                     i++;
@@ -142,8 +146,10 @@ public abstract class BasePiece : EventTrigger
         }
     }
 
-    protected virtual void CheckPathing()
+    public virtual void CheckPathing()
     {
+        mHighlightedCells.Clear();
+
         // Horizontal
         CreateCellPath(1, 0, mMovement.x);
         CreateCellPath(-1, 0, mMovement.x);
@@ -165,20 +171,6 @@ public abstract class BasePiece : EventTrigger
     {
 
     }TODO*/
-
-    protected void ShowCells()
-    {
-        foreach (Cell cell in mHighlightedCells)
-            cell.mOutlineImage.enabled = true;
-    }
-
-    protected void ClearCells()
-    {
-        foreach (Cell cell in mHighlightedCells)
-            cell.mOutlineImage.enabled = false;
-
-        mHighlightedCells.Clear();
-    }
 
     protected virtual void Move()
     {
@@ -206,11 +198,8 @@ public abstract class BasePiece : EventTrigger
     {
         base.OnBeginDrag(eventData);
 
-        // Test for cells
-        CheckPathing();
-
         // Show valid cells
-        ShowCells();
+        Cell.SetOutlineAll(mHighlightedCells, OutlineState.Legal);
     }
 
     public override void OnDrag(PointerEventData eventData)
@@ -240,12 +229,13 @@ public abstract class BasePiece : EventTrigger
         base.OnEndDrag(eventData);
 
         // Hide
-        ClearCells();
+        Cell.ClearOutlineAll(mHighlightedCells);
 
         // Return to original position
         if (!mTargetCell)
         {
             transform.position = mCurrentCell.gameObject.transform.position;
+            mPieceManager.ShowAssist();
             return;
         }
 

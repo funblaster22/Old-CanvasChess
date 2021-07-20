@@ -13,6 +13,7 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> mBlackPieces = null;
     private List<BasePiece> mPromotedPieces = new List<BasePiece>();
     private Cell[,] cells;
+    private bool isBlackTurn = false;
 
     [HideInInspector]
     public HashSet<Cell> allPossibleMoves = new HashSet<Cell>();  // Only applies to current player
@@ -148,7 +149,7 @@ public class PieceManager : MonoBehaviour
             color = Color.black;
         }
 
-        bool isBlackTurn = color == Color.white ? true : false;
+        isBlackTurn = color == Color.white;
 
         // Set team interactivity
         SetInteractive(mWhitePieces, !isBlackTurn);
@@ -157,7 +158,7 @@ public class PieceManager : MonoBehaviour
         SetInteractive(mBlackPieces, isBlackTurn);
 
         // Show assist overlay
-        ShowAssist(isBlackTurn);
+        ShowAssist();
 
         // Set promoted interactivity
         foreach (BasePiece piece in mPromotedPieces)
@@ -175,13 +176,13 @@ public class PieceManager : MonoBehaviour
         */
     }
 
-    private void ShowAssist(bool isBlackTurn)
+    public void ShowAssist()
     {
-        Cell.clearOutlineAll(allPossibleMoves);
-        Cell.clearOutlineAll(allDefendedCells);
-        Cell.clearOutlineAll(whiteAttackedCells);
-        Cell.clearOutlineAll(blackAttackedCells);
-        Cell.clearOutlineAll(allPinnedCells);
+        Cell.ClearOutlineAll(allPossibleMoves);
+        Cell.ClearOutlineAll(allDefendedCells);
+        Cell.ClearOutlineAll(whiteAttackedCells);
+        Cell.ClearOutlineAll(blackAttackedCells);
+        Cell.ClearOutlineAll(allPinnedCells);
         allPossibleMoves.Clear();
         allDefendedCells.Clear();
         whiteAttackedCells.Clear();
@@ -189,13 +190,20 @@ public class PieceManager : MonoBehaviour
         allPinnedCells.Clear();
 
         foreach (BasePiece piece in mWhitePieces)
-            piece.OnTurnStart();
+            if (piece.gameObject.activeSelf)  // Make sure piece not defeated
+                piece.CheckPathing();
         foreach (BasePiece piece in mBlackPieces)
-            piece.OnTurnStart();
+            if (piece.gameObject.activeSelf)
+                piece.CheckPathing();
         foreach (BasePiece piece in (isBlackTurn ? mBlackPieces : mWhitePieces))  // Find all possible moves
-            allPossibleMoves.UnionWith(piece.mHighlightedCells);
+            if (piece.gameObject.activeSelf)
+                allPossibleMoves.UnionWith(piece.mHighlightedCells);  // TODO: integrate within prev. loops to reduce redundancy
 
-        Cell.setOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, "red");
+        Cell.SetOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, OutlineState.Danger);
+        Cell.SetOutlineAll(isBlackTurn ? whiteAttackedCells : blackAttackedCells, OutlineState.Capture);
+        //Cell.SetOutlineAll(allPossibleMoves, OutlineState.Preview);
+        Cell.SetOutlineAll(allPinnedCells, OutlineState.Warning);  // TODO: will be a overlay later
+        
     }
 
     public void ResetPieces()

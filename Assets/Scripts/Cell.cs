@@ -2,6 +2,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum OutlineState
+{
+    None,
+    Danger,
+    Warning,
+    Legal,
+    Capture,
+    Preview
+}
+
 public class Cell : MonoBehaviour
 {
     public Image mOutlineImage;
@@ -32,23 +42,41 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public static void setOutlineAll(IEnumerable<Cell> cells, string color)
+    public static void SetOutlineAll(IEnumerable<Cell> cells, OutlineState color)
     {
         foreach (Cell cell in cells)
-            cell.setOutline(color);
+            cell.SetOutline(color);
     }
 
-    public static void clearOutlineAll(IEnumerable<Cell> cells)
+    public static void ClearOutlineAll(IEnumerable<Cell> cells)
     {
-        setOutlineAll(cells, "clear");
+        SetOutlineAll(cells, OutlineState.None);
     }
 
-    public void setOutline(string color)
-    {  // TODO
-        if (color.Equals("clear"))
-            this.mOutlineImage.enabled = false;
-        else
-            this.mOutlineImage.enabled = true;
+    public void SetOutline(OutlineState color)
+    {
+        mOutlineImage.enabled = true;
+        switch (color)
+        {
+            case OutlineState.None:
+                mOutlineImage.enabled = false;
+                break;
+            case OutlineState.Legal:
+                mOutlineImage.color = Color.black;
+                break;
+            case OutlineState.Danger:
+                mOutlineImage.color = Color.red;
+                break;
+            case OutlineState.Preview:
+                mOutlineImage.color = Color.grey;
+                break;
+            case OutlineState.Capture:
+                mOutlineImage.color = Color.green;
+                break;
+            case OutlineState.Warning:
+                mOutlineImage.color = Color.yellow;  // TODO: should be orange
+                break;
+        }
     }
 
     public void setOverlay()
