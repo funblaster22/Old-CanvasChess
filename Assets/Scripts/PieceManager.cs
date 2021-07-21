@@ -17,7 +17,7 @@ public class PieceManager : MonoBehaviour
 
     [HideInInspector]
     public HashSet<Cell> allPossibleMoves = new HashSet<Cell>();  // Only applies to current player
-    public HashSet<Cell> allDefendedCells = new HashSet<Cell>();
+    public List<Cell> allDefendedCells = new List<Cell>();  // Is a list instead of HashSet b/c need to know how well defended each piece is
     public HashSet<Cell> whiteAttackedCells = new HashSet<Cell>();
     public HashSet<Cell> blackAttackedCells = new HashSet<Cell>();
     public HashSet<Cell> allPinnedCells = new HashSet<Cell>();
