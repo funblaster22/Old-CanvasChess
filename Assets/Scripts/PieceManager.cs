@@ -179,10 +179,10 @@ public class PieceManager : MonoBehaviour
     public void ShowAssist()
     {
         Cell.ClearOutlineAll(allPossibleMoves);
-        Cell.ClearOutlineAll(allDefendedCells);
         Cell.ClearOutlineAll(whiteAttackedCells);
         Cell.ClearOutlineAll(blackAttackedCells);
         Cell.ClearOutlineAll(allPinnedCells);
+        Cell.ClearOverlayAll(allDefendedCells);
         allPossibleMoves.Clear();
         allDefendedCells.Clear();
         whiteAttackedCells.Clear();
@@ -203,6 +203,7 @@ public class PieceManager : MonoBehaviour
         Cell.SetOutlineAll(isBlackTurn ? whiteAttackedCells : blackAttackedCells, OutlineState.Capture);
         //Cell.SetOutlineAll(allPossibleMoves, OutlineState.Preview);
         Cell.SetOutlineAll(allPinnedCells, OutlineState.Warning);  // TODO: will be a overlay later
+        Cell.SetOverlayAll(allDefendedCells, Resources.Load<Sprite>("T_Shield"));
         
     }
 

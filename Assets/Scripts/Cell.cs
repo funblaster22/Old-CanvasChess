@@ -15,6 +15,7 @@ public enum OutlineState
 public class Cell : MonoBehaviour
 {
     public Image mOutlineImage;
+    public Transform overlayContainer;
 
     [HideInInspector]
     public Vector2Int mBoardPosition = Vector2Int.zero;
@@ -79,8 +80,32 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void setOverlay()
+    public void SetOverlay(Sprite sprite)
     {
+        GameObject obj = new GameObject("Item", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        //obj.transform.parent = overlayContainer.transform;
+        obj.transform.SetParent(overlayContainer, false);
+        Image img = obj.GetComponent<Image>();
+        img.preserveAspect = true;
+        img.color = new Color(91f / 255, 86f / 255, 75f / 255);
+        img.sprite = sprite;
+    }
 
+    public static void SetOverlayAll(IEnumerable<Cell> cells, Sprite sprite)
+    {
+        foreach (Cell cell in cells)
+            cell.SetOverlay(sprite);
+    }
+
+    public void ClearOverlay()
+    {
+        foreach (Transform child in overlayContainer)
+            GameObject.Destroy(child.gameObject);
+    }
+
+    public static void ClearOverlayAll(IEnumerable<Cell> cells)
+    {
+        foreach (Cell cell in cells)
+            cell.ClearOverlay();
     }
 }
