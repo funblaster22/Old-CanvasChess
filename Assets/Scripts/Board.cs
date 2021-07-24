@@ -85,7 +85,7 @@ public class Board : MonoBehaviour
         return CellState.Free;
     }
 
-    public void clearAllEffects()
+    public void ClearAllEffects()
     {
         for (int y = 0; y < 8; y++)
         {
