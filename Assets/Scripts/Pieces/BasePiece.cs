@@ -20,6 +20,7 @@ public abstract class BasePiece : EventTrigger
     protected PieceManager mPieceManager;
 
     protected Cell mTargetCell = null;  // Cell that player is dragging over
+    protected BasePiece temporarlyCaptured = null;
 
     protected Vector3Int mMovement = Vector3Int.one;
 
@@ -177,13 +178,13 @@ public abstract class BasePiece : EventTrigger
 
     protected virtual void Move(bool preview=false)  // TODO: don't actually move piece if not preview, b/c it's been done already
     {
-        // First move switch
-        if (!preview)
-            mIsFirstMove = false;
-
         // If there is an enemy piece, remove it
-        if (mTargetCell.mCurrentPiece && mTargetCell.mCurrentPiece.mColor != mColor)
+        if (mTargetCell.mCurrentPiece != null && mTargetCell.mCurrentPiece.mColor != mColor)
+        {
+            if (preview)
+                temporarlyCaptured = mTargetCell.mCurrentPiece;
             mTargetCell.RemovePiece();
+        }
 
         // Clear current
         mCurrentCell.mCurrentPiece = null;
@@ -191,15 +192,57 @@ public abstract class BasePiece : EventTrigger
         // Switch cells
         mCurrentCell = mTargetCell;
         mCurrentCell.mCurrentPiece = this;
-
-        // Move on board
-        transform.position = mCurrentCell.transform.position;
+        
         if (!preview)
+        {
+            // First move switch
+            if (mTargetCell != cellBeforeDrag)
+                mIsFirstMove = false;
+
+            // Move on board
+            transform.position = mCurrentCell.transform.position;
             mTargetCell = null;
+        }
+    }
+
+    protected virtual void UndoCapture()
+    {
+        if (temporarlyCaptured && mTargetCell != temporarlyCaptured.mCurrentCell)
+        {
+            temporarlyCaptured.gameObject.SetActive(true);
+            temporarlyCaptured.mCurrentCell.mCurrentPiece = temporarlyCaptured;
+            temporarlyCaptured = null;
+        }
     }
     #endregion
 
     #region Events
+    private bool CheckEntry(Cell cell)
+    {
+        if (RectTransformUtility.RectangleContainsScreenPoint(cell.mRectTransform, Input.mousePosition))
+            //TODO: account for begining cell RectTransformUtility.RectangleContainsScreenPoint(cellBeforeDrag.mRectTransform, Input.mousePosition)
+            {
+            // If the target cell changed, recalculate what board will look like if player were to place
+            if (mTargetCell != cell) {
+                // If the mouse is within a valid cell, get it, and break.
+                mTargetCell = cell;
+                // Set the state of the new cell
+                Move(true);
+
+                // Restore the state of the cell you're leaving
+                UndoCapture();
+
+                // Re-render overlays
+                mPieceManager.HideAssist();  // Prevents actualHighlightedCells from being cleared when erasing previous outlines
+                Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
+                mPieceManager.ShowAssist();
+            }
+
+            return true;
+        }
+        return false;
+    }
+
     public override void OnBeginDrag(PointerEventData eventData)
     {
         base.OnBeginDrag(eventData);
@@ -207,6 +250,7 @@ public abstract class BasePiece : EventTrigger
         // Remember which cell the piece started in
         cellBeforeDrag = mCurrentCell;
         actualHighlightedCells = new List<Cell>(mHighlightedCells);
+        temporarlyCaptured = null;
 
         // Show valid cells
         Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
@@ -220,30 +264,15 @@ public abstract class BasePiece : EventTrigger
         transform.position += (Vector3)eventData.delta;
 
         // Check for overlapping available squares
+        if (CheckEntry(cellBeforeDrag)) return;
         foreach (Cell cell in actualHighlightedCells)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(cell.mRectTransform, Input.mousePosition))
-                //TODO: account for begining cell RectTransformUtility.RectangleContainsScreenPoint(cellBeforeDrag.mRectTransform, Input.mousePosition)
-            {
-                // If the target cell changed, recalculate what board will look like if player were to place
-                if (mTargetCell != cell)
-                {
-                    // Restore the state of the cell you're leaving
-                    // TODO
-
-                    // If the mouse is within a valid cell, get it, and break.
-                    mTargetCell = cell;
-                    // Set the state of the new cell
-                    Move(true);
-                    mPieceManager.ShowAssist();
-                }
-
-                break;
-            }
-
-            // If the mouse is not within any highlighted cell, we don't have a valid move.
-            mTargetCell = null;
+            if (CheckEntry(cell))
+                return;
         }
+
+        // If the mouse is not within any highlighted cell, we don't have a valid move.
+        mTargetCell = null;
     }
 
     public override void OnEndDrag(PointerEventData eventData)
@@ -255,11 +284,12 @@ public abstract class BasePiece : EventTrigger
         actualHighlightedCells = mHighlightedCells;
 
         // Return to original position
-        if (!mTargetCell)
+        if (!mTargetCell || mTargetCell == cellBeforeDrag)
         {
             transform.position = mCurrentCell.gameObject.transform.position;
             mTargetCell = cellBeforeDrag;
-            Move(true);
+            Move();
+            UndoCapture();
             mPieceManager.ShowAssist();
             return;
         }

@@ -176,7 +176,7 @@ public class PieceManager : MonoBehaviour
         */
     }
 
-    public void ShowAssist()
+    public void HideAssist()
     {
         //Cell.ClearOutlineAll(allPossibleMoves);
         Cell.ClearOutlineAll(whiteAttackedCells);
@@ -188,6 +188,11 @@ public class PieceManager : MonoBehaviour
         whiteAttackedCells.Clear();
         blackAttackedCells.Clear();
         allPinnedCells.Clear();
+    }
+
+    public void ShowAssist()
+    {
+        HideAssist();
 
         foreach (BasePiece piece in mWhitePieces)
             if (piece.gameObject.activeSelf)  // Make sure piece not defeated
