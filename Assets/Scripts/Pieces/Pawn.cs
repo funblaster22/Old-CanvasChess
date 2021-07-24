@@ -17,11 +17,12 @@ public class Pawn : BasePiece
         GetComponent<Image>().sprite = Resources.Load<Sprite>("T_Pawn");
     }
 
-    protected override void Move()
+    protected override void Move(bool preview = false)
     {
-        base.Move();
+        base.Move(preview);
 
-        CheckForPromotion();
+        if (!preview)
+            CheckForPromotion();
     }
 
     private bool MatchesState(int targetX, int targetY, CellState targetState)

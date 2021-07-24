@@ -39,18 +39,21 @@ public class King : BasePiece
         mLeftRook = GetRook(-1, 4);
     }
 
-    protected override void Move()
+    protected override void Move(bool preview = false)
     {
         // Base move
-        base.Move();
+        base.Move(preview);
 
-        // Left rook
-        if (CanCastle(mLeftRook))
-            mLeftRook.Castle();
+        if (!preview)
+        {
+            // Left rook
+            if (CanCastle(mLeftRook))
+                mLeftRook.Castle();
 
-        // Right rook
-        if (CanCastle(mRightRook))
-            mRightRook.Castle();
+            // Right rook
+            if (CanCastle(mRightRook))
+                mRightRook.Castle();
+        }
     }
 
     private bool CanCastle(Rook rook)

@@ -8,16 +8,18 @@ public abstract class BasePiece : EventTrigger
     [HideInInspector]
     public Color mColor = Color.clear;
     public bool mIsFirstMove = true;
-    public List<Cell> mHighlightedCells = new List<Cell>();
+    public List<Cell> mHighlightedCells = new List<Cell>();  // Highlighted cells that the player can move to in 2 turns // TODO: rename to 'previewHighlightedCells'
+    public List<Cell> actualHighlightedCells = null;  // Highighted cells that the player can move to
     abstract public int Value { get; }
 
-    protected Cell mOriginalCell = null;
+    protected Cell mOriginalCell = null;  // Cell that piece belongs in at the start of a new game
     protected Cell mCurrentCell = null;
+    protected Cell cellBeforeDrag = null;
 
     protected RectTransform mRectTransform = null;
     protected PieceManager mPieceManager;
 
-    protected Cell mTargetCell = null;
+    protected Cell mTargetCell = null;  // Cell that player is dragging over
 
     protected Vector3Int mMovement = Vector3Int.one;
 
@@ -173,13 +175,15 @@ public abstract class BasePiece : EventTrigger
 
     }TODO*/
 
-    protected virtual void Move()
+    protected virtual void Move(bool preview=false)  // TODO: don't actually move piece if not preview, b/c it's been done already
     {
         // First move switch
-        mIsFirstMove = false;
+        if (!preview)
+            mIsFirstMove = false;
 
         // If there is an enemy piece, remove it
-        mTargetCell.RemovePiece();
+        if (mTargetCell.mCurrentPiece && mTargetCell.mCurrentPiece.mColor != mColor)
+            mTargetCell.RemovePiece();
 
         // Clear current
         mCurrentCell.mCurrentPiece = null;
@@ -190,7 +194,8 @@ public abstract class BasePiece : EventTrigger
 
         // Move on board
         transform.position = mCurrentCell.transform.position;
-        mTargetCell = null;
+        if (!preview)
+            mTargetCell = null;
     }
     #endregion
 
@@ -199,8 +204,12 @@ public abstract class BasePiece : EventTrigger
     {
         base.OnBeginDrag(eventData);
 
+        // Remember which cell the piece started in
+        cellBeforeDrag = mCurrentCell;
+        actualHighlightedCells = new List<Cell>(mHighlightedCells);
+
         // Show valid cells
-        Cell.SetOutlineAll(mHighlightedCells, OutlineState.Legal);
+        Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
     }
 
     public override void OnDrag(PointerEventData eventData)
@@ -211,12 +220,24 @@ public abstract class BasePiece : EventTrigger
         transform.position += (Vector3)eventData.delta;
 
         // Check for overlapping available squares
-        foreach (Cell cell in mHighlightedCells)
+        foreach (Cell cell in actualHighlightedCells)
         {
             if (RectTransformUtility.RectangleContainsScreenPoint(cell.mRectTransform, Input.mousePosition))
+                //TODO: account for begining cell RectTransformUtility.RectangleContainsScreenPoint(cellBeforeDrag.mRectTransform, Input.mousePosition)
             {
-                // If the mouse is within a valid cell, get it, and break.
-                mTargetCell = cell;
+                // If the target cell changed, recalculate what board will look like if player were to place
+                if (mTargetCell != cell)
+                {
+                    // Restore the state of the cell you're leaving
+                    // TODO
+
+                    // If the mouse is within a valid cell, get it, and break.
+                    mTargetCell = cell;
+                    // Set the state of the new cell
+                    Move(true);
+                    mPieceManager.ShowAssist();
+                }
+
                 break;
             }
 
@@ -230,12 +251,15 @@ public abstract class BasePiece : EventTrigger
         base.OnEndDrag(eventData);
 
         // Hide
-        Cell.ClearOutlineAll(mHighlightedCells);
+        Cell.ClearOutlineAll(actualHighlightedCells);
+        actualHighlightedCells = mHighlightedCells;
 
         // Return to original position
         if (!mTargetCell)
         {
             transform.position = mCurrentCell.gameObject.transform.position;
+            mTargetCell = cellBeforeDrag;
+            Move(true);
             mPieceManager.ShowAssist();
             return;
         }
