@@ -105,9 +105,10 @@ public abstract class BasePiece : EventTrigger
             // If enemy, add to list, break
             if (cellState == CellState.Enemy)
             {
-                mHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                Cell firstHit = mCurrentCell.mBoard.mAllCells[currentX, currentY];
+                mHighlightedCells.Add(firstHit);
                 (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells)
-                    .Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+                    .Add(firstHit);
                 // Check for pieces that are pinned behind this one
                 while (i <= movement)
                 {
@@ -121,7 +122,7 @@ public abstract class BasePiece : EventTrigger
                         if (cell.mCurrentPiece.Value > 1)  // Only mark as pinned if 2nd piece is not a pawn
                         {
                             // TODO: only mark as pinned if 2nd piece is undefended
-                            mPieceManager.allPinnedCells.Add(cell);
+                            mPieceManager.allPinnedCells.Add(firstHit);
                         }
                         break;
                     }

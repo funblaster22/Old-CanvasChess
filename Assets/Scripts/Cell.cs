@@ -12,6 +12,12 @@ public enum OutlineState
     Preview
 }
 
+public enum OverlayType
+{
+    Shield,
+    Pin
+}
+
 public class Cell : MonoBehaviour
 {
     public Image mOutlineImage;
@@ -80,18 +86,28 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void SetOverlay(Sprite sprite)
+    public void SetOverlay(OverlayType sprite)
     {
         GameObject obj = new GameObject("Item", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         //obj.transform.parent = overlayContainer.transform;
         obj.transform.SetParent(overlayContainer, false);
         Image img = obj.GetComponent<Image>();
         img.preserveAspect = true;
-        img.color = new Color(91f / 255, 86f / 255, 75f / 255);
-        img.sprite = sprite;
+        switch (sprite)
+        {
+            case OverlayType.Shield:
+                img.color = new Color(91f / 255, 86f / 255, 75f / 255);
+                img.sprite = Resources.Load<Sprite>("T_Shield");
+                break;
+            case OverlayType.Pin:
+                img.color = new Color(128f / 255, 0, 128f / 255);
+                img.sprite = Resources.Load<Sprite>("T_Pin");
+                break;
+        }
+        
     }
 
-    public static void SetOverlayAll(IEnumerable<Cell> cells, Sprite sprite)
+    public static void SetOverlayAll(IEnumerable<Cell> cells, OverlayType sprite)
     {
         foreach (Cell cell in cells)
             cell.SetOverlay(sprite);
