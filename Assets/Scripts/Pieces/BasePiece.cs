@@ -246,15 +246,5 @@ public abstract class BasePiece : EventTrigger
         // End turn
         mPieceManager.SwitchSides(mColor);
     }
-
-    public void OnTurnStart()
-    {
-        CheckPathing();
-    }
-
-    public void OnTurnEnd()
-    {
-
-    }
     #endregion
 }

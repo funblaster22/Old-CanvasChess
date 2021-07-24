@@ -22,13 +22,13 @@ public class PieceManager : MonoBehaviour
     public HashSet<Cell> blackAttackedCells = new HashSet<Cell>();
     public HashSet<Cell> allPinnedCells = new HashSet<Cell>();
 
-    private string[] mPieceOrder = new string[16]
+    private readonly string[] mPieceOrder = new string[16]
     {
         "P", "P", "P", "P", "P", "P", "P", "P",
         "R", "KN", "B", "Q", "K", "B", "KN", "R"
     };
 
-    private Dictionary<string, Type> mPieceLibrary = new Dictionary<string, Type>()
+    private readonly Dictionary<string, Type> mPieceLibrary = new Dictionary<string, Type>()
     {
         {"P",  typeof(Pawn)},
         {"R",  typeof(Rook)},
