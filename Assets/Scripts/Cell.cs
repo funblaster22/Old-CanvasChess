@@ -96,11 +96,11 @@ public class Cell : MonoBehaviour
         switch (sprite)
         {
             case OverlayType.Shield:
-                img.color = new Color(91f / 255, 86f / 255, 75f / 255);
+                img.color = Globals.brown;
                 img.sprite = Resources.Load<Sprite>("T_Shield");
                 break;
             case OverlayType.Pin:
-                img.color = new Color(128f / 255, 0, 128f / 255);
+                img.color = Globals.purple;
                 img.sprite = Resources.Load<Sprite>("T_Pin");
                 break;
         }
