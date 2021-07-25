@@ -8,8 +8,20 @@ public class Settings
     public static readonly Settings black = new Settings(true);
 
     public bool isBlack;
+    public bool showDefended = true;
+    public bool showPinned = true;
+    public bool showDanger = true;
+
+    // TODO: not implemented yet
+    public bool showAllMoves = true;
+    public bool showCaptures = true;
 
     public Settings(bool isBlack) {
         this.isBlack = isBlack;
+    }
+
+    public static Settings GetPlayer(bool isBlack)
+    {
+        return isBlack ? black : white;
     }
 }
