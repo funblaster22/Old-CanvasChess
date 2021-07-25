@@ -1,3 +1,5 @@
+// Adapted from https://github.com/liuqiaosz/Unity/blob/master/UGUI%E6%BA%90%E4%BB%A3%E7%A0%81/UnityEngine.UI/UI/Core/Layout/HorizontalOrVerticalLayoutGroup.cs
+
 namespace UnityEngine.UI
 {
     [AddComponentMenu("Layout/Horizontal Layout Group", 150)]
