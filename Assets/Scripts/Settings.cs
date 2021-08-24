@@ -8,13 +8,14 @@ public class Settings
     public static readonly Settings black = new Settings(true);
 
     public bool isBlack;
+    public bool showAssist = true;
     public bool showDefended = true;
     public bool showPinned = true;
     public bool showDanger = true;
+    public bool showCaptures = true;
 
     // TODO: not implemented yet
     public bool showAllMoves = true;
-    public bool showCaptures = true;
 
     public Settings(bool isBlack) {
         this.isBlack = isBlack;

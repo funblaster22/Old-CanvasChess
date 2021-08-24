@@ -206,7 +206,8 @@ public class PieceManager : MonoBehaviour
 
         if (Settings.GetPlayer(isBlackTurn).showDanger)
             Cell.SetOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, OutlineState.Danger);
-        Cell.SetOutlineAll(isBlackTurn ? whiteAttackedCells : blackAttackedCells, OutlineState.Capture);
+        if (Settings.GetPlayer(isBlackTurn).showCaptures)
+            Cell.SetOutlineAll(isBlackTurn ? whiteAttackedCells : blackAttackedCells, OutlineState.Capture);
         //Cell.SetOutlineAll(allPossibleMoves, OutlineState.Preview);
         //Cell.SetOutlineAll(allPinnedCells, OutlineState.Warning);  // TODO: will be a overlay later
         if (Settings.GetPlayer(isBlackTurn).showDefended)
