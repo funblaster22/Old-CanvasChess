@@ -24,6 +24,14 @@ public abstract class BasePiece : EventTrigger
 
     protected Vector3Int mMovement = Vector3Int.one;
 
+    public Cell CurrentCell
+     {
+        get
+        {
+            return mCurrentCell;
+        }
+    }
+
     public virtual void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
         mPieceManager = newPieceManager;

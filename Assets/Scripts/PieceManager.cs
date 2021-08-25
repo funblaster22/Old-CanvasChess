@@ -201,8 +201,10 @@ public class PieceManager : MonoBehaviour
             if (piece.gameObject.activeSelf)
                 piece.CheckPathing();
         foreach (BasePiece piece in (isBlackTurn ? mBlackPieces : mWhitePieces))  // Find all possible moves
-            if (piece.gameObject.activeSelf)
+            if (piece.gameObject.activeSelf) {
+                allPossibleMoves.Add(piece.CurrentCell);
                 allPossibleMoves.UnionWith(piece.mHighlightedCells);  // TODO: integrate within prev. loops to reduce redundancy
+            }
 
         if (Settings.GetPlayer(isBlackTurn).showDanger)
             Cell.SetOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, OutlineState.Danger);
