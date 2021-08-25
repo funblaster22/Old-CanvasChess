@@ -22,7 +22,8 @@ public class PauseMenu : MonoBehaviour
             {
                 Pause();
             }
-        }
+        } else if (Input.GetKeyDown(KeyCode.F11))
+            Screen.fullScreen = !Screen.fullScreen;
     }
 
     public void Resume()
