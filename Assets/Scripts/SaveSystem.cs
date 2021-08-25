@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class SaveSystem
 {
-    private static readonly string savePath = Application.persistentDataPath + "/chess.game";
+    public static readonly string savePath = Application.persistentDataPath + "/chess.game";
 
     public static void SaveGame(bool isBlackTurn, List<BasePiece> pieces)
     {

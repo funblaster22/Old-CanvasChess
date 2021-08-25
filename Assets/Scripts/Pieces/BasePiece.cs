@@ -327,6 +327,7 @@ public abstract class BasePiece : EventTrigger
         Move();
 
         // End turn
+        SaveSystem.SaveGame(!isBlack, mPieceManager.AllPieces);
         mPieceManager.SwitchSides(mColor);
     }
     #endregion

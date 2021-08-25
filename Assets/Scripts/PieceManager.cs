@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 
 public class PieceManager : MonoBehaviour
 {
@@ -58,8 +59,10 @@ public class PieceManager : MonoBehaviour
         PlacePieces(6, 7, mBlackPieces, board);
 
         GameData game = SaveSystem.LoadGame();
-        if (game != null) {
-            foreach (PieceData piece in game.pieces) {
+        if (game != null)
+        {
+            foreach (PieceData piece in game.pieces)
+            {
                 // Query piece
                 Cell originalCell = board.mAllCells[piece.originalPosition.x, piece.originalPosition.y];
                 BasePiece gamePiece = originalCell.mCurrentPiece;
@@ -71,13 +74,13 @@ public class PieceManager : MonoBehaviour
                 // Place
                 gamePiece.Place(board.mAllCells[piece.position.x, piece.position.y], false);
             }
+            mIsKingAlive = true;
+            SwitchSides(game.isBlackTurn ? Color.white : Color.black);
+        } else
+        {
+            // White goes first
+            SwitchSides(Color.black);
         }
-        mIsKingAlive = true;
-
-        // White goes first
-        SwitchSides(Color.black);
-
-        SwitchSides(game.isBlackTurn ? Color.white : Color.black);
     }
 
     private List<BasePiece> CreatePieces(Color teamColor, Color32 spriteColor)
@@ -198,8 +201,6 @@ public class PieceManager : MonoBehaviour
         if (isBlackTurn)
             MoveRandomPiece();
         */
-
-        SaveSystem.SaveGame(isBlackTurn, AllPieces);
     }
 
     public void HideAssist()
@@ -261,6 +262,8 @@ public class PieceManager : MonoBehaviour
 
         foreach (BasePiece piece in mBlackPieces)
             piece.Reset();
+
+        File.Delete(SaveSystem.savePath);
     }
 
     public void PromotePiece(Pawn pawn, Cell cell, Color teamColor, Color spriteColor)

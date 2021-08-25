@@ -9,6 +9,14 @@ public class PauseMenu : MonoBehaviour
     protected static bool gameOngoing = false;
 
     public GameObject pauseMenuUI;
+    public GameObject resumeButton;
+    public PieceManager pieceManager;
+
+    void Start()
+    {
+        if (SaveSystem.LoadGame() == null)
+            resumeButton.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
@@ -28,10 +36,18 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
+        resumeButton.SetActive(true);
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
         gameOngoing = true;
+    }
+
+    public void New2P()
+    {
+        Resume();
+        pieceManager.ResetPieces();
+        pieceManager.SwitchSides(Color.black);
     }
 
     void Pause()
