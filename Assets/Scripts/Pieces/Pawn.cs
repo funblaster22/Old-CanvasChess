@@ -40,7 +40,7 @@ public class Pawn : BasePiece
                     (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells).Add(cell);
             }
             if (cellState == targetState) {
-                mHighlightedCells.Add(cell);
+                mHighlightedCells.Add(cell);  // TODO: only add attackable cells to allHighlighted
                 return true;
             }
         }

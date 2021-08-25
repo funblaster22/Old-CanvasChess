@@ -7,6 +7,7 @@ public abstract class BasePiece : EventTrigger
 {
     [HideInInspector]
     public Color mColor = Color.clear;
+    private bool isBlack;
     public bool mIsFirstMove = true;
     public List<Cell> mHighlightedCells = new List<Cell>();  // Highlighted cells that the player can move to in 2 turns // TODO: rename to 'previewHighlightedCells'
     public List<Cell> actualHighlightedCells = null;  // Highighted cells that the player can move to
@@ -37,6 +38,7 @@ public abstract class BasePiece : EventTrigger
         mPieceManager = newPieceManager;
 
         mColor = newTeamColor;
+        isBlack = mColor == Color.black;
         GetComponent<Image>().color = newSpriteColor;
         mRectTransform = GetComponent<RectTransform>();
     }
@@ -244,11 +246,12 @@ public abstract class BasePiece : EventTrigger
                 mPieceManager.HideAssist();  // Prevents actualHighlightedCells from being cleared when erasing previous outlines
                 bool isBlack = mColor == Color.black;
                 Settings mySettings = Settings.GetPlayer(isBlack);
-                if (mySettings.showCurrentMove)
-                    Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
-                /*if (mySettings.showAllMoves)
-                    mHighlightedCells.Add(mTargetCell);  // TODO: highlight currently occupied cell*/
                 mPieceManager.ShowAssist();
+                if (mySettings.showCurrentMove) {
+                    mHighlightedCells.Add(mTargetCell);  // Use mHeilighted or actualHighlighted?
+                    Cell.SetBackgroundAll(actualHighlightedCells, isBlack ? Globals.red : Globals.blue, 200);
+                    cellBeforeDrag.SetBackground(isBlack ? Globals.red : Globals.blue, 200);
+                }
             }
 
             return true;
@@ -266,8 +269,11 @@ public abstract class BasePiece : EventTrigger
         temporarlyCaptured = null;
 
         // Show valid cells
-        if (Settings.GetPlayer(mColor == Color.black).showCurrentMove)  // TODO: reduce redundancy with CheckEntry
-            Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
+        if (Settings.GetPlayer(mColor == Color.black).showCurrentMove)
+        {  // TODO: reduce redundancy with CheckEntry
+            Cell.SetBackgroundAll(actualHighlightedCells, isBlack ? Globals.red : Globals.blue, 200);
+            cellBeforeDrag.SetBackground(isBlack ? Globals.red : Globals.blue, 200);
+        }
     }
 
     public override void OnDrag(PointerEventData eventData)
@@ -294,7 +300,8 @@ public abstract class BasePiece : EventTrigger
         base.OnEndDrag(eventData);
 
         // Hide
-        Cell.ClearOutlineAll(actualHighlightedCells);
+        Cell.ClearBackgroundAll(actualHighlightedCells);
+        cellBeforeDrag.background.enabled = false;
         actualHighlightedCells = mHighlightedCells;
 
         // Return to original position

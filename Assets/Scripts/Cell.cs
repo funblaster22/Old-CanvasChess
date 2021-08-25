@@ -128,11 +128,15 @@ public class Cell : MonoBehaviour
 
     public static void SetBackgroundAll(IEnumerable<Cell> cells, Color color, byte transparency)
     {
+        foreach (Cell cell in cells)
+            cell.SetBackground(color, transparency);
+    }
+
+    public void SetBackground(Color color, byte transparency)
+    {
         Color newColor = new Color(color.r, color.g, color.b, (float)transparency / 255);
-        foreach (Cell cell in cells) {
-            cell.background.enabled = true;
-            cell.background.color = newColor;
-        }  
+        background.enabled = true;
+        background.color = newColor;
     }
 
     public static void ClearBackgroundAll(IEnumerable<Cell> cells)
