@@ -22,6 +22,7 @@ public class Cell : MonoBehaviour
 {
     public Image mOutlineImage;
     public Transform overlayContainer;
+    public Image background;
 
     [HideInInspector]
     public Vector2Int mBoardPosition = Vector2Int.zero;
@@ -123,5 +124,20 @@ public class Cell : MonoBehaviour
     {
         foreach (Cell cell in cells)
             cell.ClearOverlay();
+    }
+
+    public static void SetBackgroundAll(IEnumerable<Cell> cells, Color color, byte transparency)
+    {
+        Color newColor = new Color(color.r, color.g, color.b, (float)transparency / 255);
+        foreach (Cell cell in cells) {
+            cell.background.enabled = true;
+            cell.background.color = newColor;
+        }  
+    }
+
+    public static void ClearBackgroundAll(IEnumerable<Cell> cells)
+    {
+        foreach (Cell cell in cells)
+            cell.background.enabled = false;
     }
 }

@@ -178,7 +178,7 @@ public class PieceManager : MonoBehaviour
 
     public void HideAssist()
     {
-        //Cell.ClearOutlineAll(allPossibleMoves);
+        Cell.ClearBackgroundAll(allPossibleMoves);
         Cell.ClearOutlineAll(whiteAttackedCells);
         Cell.ClearOutlineAll(blackAttackedCells);
         Cell.ClearOverlayAll(allPinnedCells);
@@ -208,7 +208,8 @@ public class PieceManager : MonoBehaviour
             Cell.SetOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, OutlineState.Danger);
         if (Settings.GetPlayer(isBlackTurn).showCaptures)
             Cell.SetOutlineAll(isBlackTurn ? whiteAttackedCells : blackAttackedCells, OutlineState.Capture);
-        //Cell.SetOutlineAll(allPossibleMoves, OutlineState.Preview);
+        if (Settings.GetPlayer(isBlackTurn).showAllMoves)
+            Cell.SetBackgroundAll(allPossibleMoves, isBlackTurn ? Globals.red : Globals.blue, 100);
         //Cell.SetOutlineAll(allPinnedCells, OutlineState.Warning);  // TODO: will be a overlay later
         if (Settings.GetPlayer(isBlackTurn).showDefended)
             Cell.SetOverlayAll(allDefendedCells, OverlayType.Shield);

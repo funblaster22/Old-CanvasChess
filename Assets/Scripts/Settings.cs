@@ -13,9 +13,8 @@ public class Settings
     public bool showPinned = true;
     public bool showDanger = true;
     public bool showCaptures = true;
-
-    // TODO: not implemented yet
     public bool showAllMoves = true;
+    public bool showCurrentMove = true;
 
     public Settings(bool isBlack) {
         this.isBlack = isBlack;

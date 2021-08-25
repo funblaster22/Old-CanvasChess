@@ -19,10 +19,13 @@ public class AssistOptions : MonoBehaviour
         themeColor = isBlack ? Globals.red : Globals.blue;
         transform.GetChild(0).GetComponent<Text>().text = (isBlack ? "Red" : "Blue") + " Options";
         Toggle[] toggleSwitchs = GetComponentsInChildren<Toggle>();
+        // TODO: more robust way that doesn't depend on order
         toggleSwitchs[1].onValueChanged.AddListener(newVal => { settings.showDefended = newVal; mPieceManager.ShowAssist(); });
         toggleSwitchs[2].onValueChanged.AddListener(newVal => { settings.showPinned = newVal; mPieceManager.ShowAssist(); });
         toggleSwitchs[3].onValueChanged.AddListener(newVal => { settings.showDanger = newVal; mPieceManager.ShowAssist(); });
         toggleSwitchs[4].onValueChanged.AddListener(newVal => { settings.showCaptures = newVal; mPieceManager.ShowAssist(); });
+        toggleSwitchs[5].onValueChanged.AddListener(newVal => { settings.showAllMoves = newVal; mPieceManager.ShowAssist(); });
+        toggleSwitchs[6].onValueChanged.AddListener(newVal => { settings.showCurrentMove = newVal; mPieceManager.ShowAssist(); });
     }
 
     public void ToggleAll(bool newVal)

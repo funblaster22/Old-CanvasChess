@@ -234,7 +234,12 @@ public abstract class BasePiece : EventTrigger
 
                 // Re-render overlays
                 mPieceManager.HideAssist();  // Prevents actualHighlightedCells from being cleared when erasing previous outlines
-                Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
+                bool isBlack = mColor == Color.black;
+                Settings mySettings = Settings.GetPlayer(isBlack);
+                if (mySettings.showCurrentMove)
+                    Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
+                /*if (mySettings.showAllMoves)
+                    mHighlightedCells.Add(mTargetCell);  // TODO: highlight currently occupied cell*/
                 mPieceManager.ShowAssist();
             }
 
@@ -253,7 +258,8 @@ public abstract class BasePiece : EventTrigger
         temporarlyCaptured = null;
 
         // Show valid cells
-        Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
+        if (Settings.GetPlayer(mColor == Color.black).showCurrentMove)  // TODO: reduce redundancy with CheckEntry
+            Cell.SetOutlineAll(actualHighlightedCells, OutlineState.Legal);
     }
 
     public override void OnDrag(PointerEventData eventData)
