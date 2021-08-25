@@ -14,7 +14,6 @@ public class GameData
         this.isBlackTurn = isBlackTurn;
         this.pieces = new List<PieceData>();
         foreach (BasePiece piece in pieces)
-            if (piece.gameObject.activeSelf == true)
             this.pieces.Add(new PieceData(piece));
     }
 }
@@ -24,9 +23,11 @@ public class PieceData
 {
     public Coordinate originalPosition;
     public Coordinate position;
+    public bool isDefeated;
 
     public PieceData(BasePiece piece)
     {
+        isDefeated = !piece.gameObject.activeSelf;
         position = new Coordinate(piece.CurrentCell.mBoardPosition);
         originalPosition = new Coordinate(piece.OriginalCell.mBoardPosition);
     }

@@ -72,7 +72,8 @@ public class PieceManager : MonoBehaviour
                 if (piece.originalPosition != piece.position)  // TODO: will cause issues with references?
                     gamePiece.mIsFirstMove = false;
                 // Place
-                gamePiece.Place(board.mAllCells[piece.position.x, piece.position.y], false);
+                if (!piece.isDefeated)
+                    gamePiece.Place(board.mAllCells[piece.position.x, piece.position.y], false);
             }
             mIsKingAlive = true;
             SwitchSides(game.isBlackTurn ? Color.white : Color.black);
