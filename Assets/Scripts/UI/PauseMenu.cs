@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Adapted from https://youtu.be/JivuXdrIHK0 (Brackeys)
 public class PauseMenu : MonoBehaviour
 {
     // TODO: have buttons to start new 1P or 2P

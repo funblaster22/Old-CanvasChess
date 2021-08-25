@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
+// Adapted from https://youtu.be/XOjd_qU2Ido (Brackeys)
 public static class SaveSystem
 {
     public static readonly string savePath = Application.persistentDataPath + "/chess.game";
