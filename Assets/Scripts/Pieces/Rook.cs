@@ -21,10 +21,10 @@ public class Rook : BasePiece
         GetComponent<Image>().sprite = Resources.Load<Sprite>("T_Rook");
     }
 
-    public override void Place(Cell newCell)
+    public override void Place(Cell newCell, bool overrideOriginal = true)
     {
         // After being placed, set castle, need current cell
-        base.Place(newCell);
+        base.Place(newCell, overrideOriginal);
 
         // Trigger cell
         int triggerOffset = mCurrentCell.mBoardPosition.x < 4 ? 2 : -1;

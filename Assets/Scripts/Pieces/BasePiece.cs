@@ -33,6 +33,12 @@ public abstract class BasePiece : EventTrigger
         }
     }
 
+    public Cell OriginalCell {
+        get {
+            return mOriginalCell;
+        }
+    }
+
     public virtual void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
         mPieceManager = newPieceManager;
@@ -43,11 +49,12 @@ public abstract class BasePiece : EventTrigger
         mRectTransform = GetComponent<RectTransform>();
     }
 
-    public virtual void Place(Cell newCell)
+    public virtual void Place(Cell newCell, bool overrideOriginal=true)
     {
         // Cell stuff
         mCurrentCell = newCell;
-        mOriginalCell = newCell;
+        if (overrideOriginal)
+            mOriginalCell = newCell;
         mCurrentCell.mCurrentPiece = this;
 
         // Object stuff

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PieceManager : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class PieceManager : MonoBehaviour
 
     private List<BasePiece> mWhitePieces = null;
     private List<BasePiece> mBlackPieces = null;
+    public List<BasePiece> AllPieces
+    {
+        get { return mWhitePieces.Concat(mBlackPieces).ToList(); }
+    }
     private List<BasePiece> mPromotedPieces = new List<BasePiece>();
     private Cell[,] cells;
     private bool isBlackTurn = false;
@@ -52,8 +57,27 @@ public class PieceManager : MonoBehaviour
         PlacePieces(1, 0, mWhitePieces, board);
         PlacePieces(6, 7, mBlackPieces, board);
 
+        GameData game = SaveSystem.LoadGame();
+        if (game != null) {
+            foreach (PieceData piece in game.pieces) {
+                // Query piece
+                Cell originalCell = board.mAllCells[piece.originalPosition.x, piece.originalPosition.y];
+                BasePiece gamePiece = originalCell.mCurrentPiece;
+                // Kill
+                gamePiece.Kill();
+                // Set firstmove to false if moved
+                if (piece.originalPosition != piece.position)  // TODO: will cause issues with references?
+                    gamePiece.mIsFirstMove = false;
+                // Place
+                gamePiece.Place(board.mAllCells[piece.position.x, piece.position.y], false);
+            }
+        }
+        mIsKingAlive = true;
+
         // White goes first
         SwitchSides(Color.black);
+
+        SwitchSides(game.isBlackTurn ? Color.white : Color.black);
     }
 
     private List<BasePiece> CreatePieces(Color teamColor, Color32 spriteColor)
@@ -174,6 +198,8 @@ public class PieceManager : MonoBehaviour
         if (isBlackTurn)
             MoveRandomPiece();
         */
+
+        SaveSystem.SaveGame(isBlackTurn, AllPieces);
     }
 
     public void HideAssist()
@@ -221,6 +247,7 @@ public class PieceManager : MonoBehaviour
 
     public void ResetPieces()
     {
+        print("Good Game!");
         foreach (BasePiece piece in mPromotedPieces)
         {
             piece.Kill();
