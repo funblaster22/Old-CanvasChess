@@ -136,6 +136,7 @@ public abstract class BasePiece : EventTrigger
                         {
                             // TODO: only mark as pinned if 2nd piece is undefended
                             mPieceManager.allPinnedCells.Add(firstHit);
+                            mPieceManager.allPinnedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
                         }
                         break;
                     }
