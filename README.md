@@ -1,4 +1,4 @@
-### Assist Chess
+## Assist Chess
 
 Play on [itch.io](https://funblaster22.itch.io/assist-chess)!
 
@@ -16,3 +16,7 @@ The objective of _Assist Chess_ is to provide enough useful information to infor
 - **Show captures** outlines in green pieces that you could capture from your opponent
 - **Show all moves** shades the cell of squares you could move to with any piece
 - **Show current move** shades the cells that the piece you are currently dragging can move to
+
+### Screenshots
+![Board](/.github/mainmenu.png)
+![Gameplay](/.github/gameplay.gif)
