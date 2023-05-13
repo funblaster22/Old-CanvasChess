@@ -179,6 +179,11 @@ public class PieceManager : MonoBehaviour
 
         isBlackTurn = color == Color.white;
 
+        // Rotate board
+        foreach (var rotatable in GameObject.FindGameObjectsWithTag("Rotatable")) {
+            rotatable.transform.localEulerAngles = new Vector3(0, 0, isBlackTurn ? 180 : 0);
+        }
+
         // Set team interactivity
         SetInteractive(mWhitePieces, !isBlackTurn);
 
