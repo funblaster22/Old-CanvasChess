@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class King : BasePiece
@@ -33,17 +34,14 @@ public class King : BasePiece
         base.CheckPathing();
 
         // Right
-        mRightRook = GetRook(1, 3);
+        mRightRook = GetRook(3);
 
         // Left
-        mLeftRook = GetRook(-1, 4);
+        mLeftRook = GetRook(-4);
     }
 
     protected override void Move(bool preview = false)
     {
-        // Base move
-        base.Move(preview);
-
         if (!preview)
         {
             // Left rook
@@ -54,6 +52,9 @@ public class King : BasePiece
             if (CanCastle(mRightRook))
                 mRightRook.Castle();
         }
+
+        // Base move (run this last b/c it sets mIsFirstMove to false, which will prevent castling)
+        base.Move(preview);
     }
 
     private bool CanCastle(Rook rook)
@@ -73,28 +74,30 @@ public class King : BasePiece
         return true;
     }
 
-    private Rook GetRook(int direction, int count)
+    private Rook GetRook(int count)
     {
         // Has the king moved?
         if (!mIsFirstMove)
             return null;
 
         // Numbers and stuff
-        int currentX = mCurrentCell.mBoardPosition.x;
-        int currentY = mCurrentCell.mBoardPosition.y;
+        var checkCell = cellBeforeDrag != null ? cellBeforeDrag : mCurrentCell;
+        int currentX = checkCell.mBoardPosition.x;
+        int currentY = checkCell.mBoardPosition.y;
 
-        // Go through the cells
-        for (int i = 1; i < count; i++)
+        // Ensure all cells in between are empty. Skip 0 b/c that's where king is
+        for (int i = 1; i < Math.Abs(count); i++)
         {
-            int offsetX = currentX + (i * direction);
+            int offsetX = currentX + (i * Math.Sign(count));
             CellState cellState = mCurrentCell.mBoard.ValidateCell(offsetX, currentY, this);
 
-            if (cellState != CellState.Free)
+            // Check if king b/c the preview king piece might be there
+            if (cellState != CellState.Free && mCurrentCell.mBoard.mAllCells[offsetX, currentY].mCurrentPiece is not King)
                 return null;
         }
 
         // Try and get rook
-        Cell rookCell = mCurrentCell.mBoard.mAllCells[currentX + (count * direction), currentY];
+        Cell rookCell = mCurrentCell.mBoard.mAllCells[currentX + count, currentY];
         Rook rook = null;
 
         // Check for cast
