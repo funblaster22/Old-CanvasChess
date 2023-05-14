@@ -14,7 +14,9 @@ public enum OutlineState
 
 public enum OverlayType
 {
+    PartialShield,
     Shield,
+    Sword,
     Pin
 }
 
@@ -99,6 +101,14 @@ public class Cell : MonoBehaviour
             case OverlayType.Shield:
                 img.color = Globals.brown;
                 img.sprite = Resources.Load<Sprite>("T_Shield");
+                break;
+            case OverlayType.PartialShield:
+                img.color = Globals.lightbrown;
+                img.sprite = Resources.Load<Sprite>("T_Shield");
+                break;
+            case OverlayType.Sword:
+                img.color = Globals.brown;
+                img.sprite = Resources.Load<Sprite>("T_Sword");
                 break;
             case OverlayType.Pin:
                 img.color = Globals.purple;

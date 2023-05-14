@@ -22,10 +22,10 @@ public class PieceManager : MonoBehaviour
     private bool isBlackTurn = false;
 
     [HideInInspector]
-    public List<Cell> allDefendedCells = new List<Cell>();  // Is a list instead of HashSet b/c need to know how well defended each piece is
+    public List<Cell> allDefendedCells = new();  // Is a list instead of HashSet b/c need to know how well defended each piece is
+    public List<Cell> whiteAttackedCells = new();
+    public List<Cell> blackAttackedCells = new();
     public HashSet<Cell> allPossibleMoves = new HashSet<Cell>();  // Only applies to current player
-    public HashSet<Cell> whiteAttackedCells = new HashSet<Cell>();
-    public HashSet<Cell> blackAttackedCells = new HashSet<Cell>();
     public HashSet<Cell> allPinnedCells = new HashSet<Cell>();
 
     private readonly string[] mPieceOrder = new string[16]
@@ -211,11 +211,10 @@ public class PieceManager : MonoBehaviour
 
     public void HideAssist()
     {
-        Cell.ClearBackgroundAll(allPossibleMoves);
-        Cell.ClearOutlineAll(whiteAttackedCells);
-        Cell.ClearOutlineAll(blackAttackedCells);
-        Cell.ClearOverlayAll(allPinnedCells);
-        Cell.ClearOverlayAll(allDefendedCells);
+        IEnumerable<Cell> allCells = Enumerable.Cast<Cell>(cells);
+        Cell.ClearBackgroundAll(allCells);
+        Cell.ClearOutlineAll(allCells);
+        Cell.ClearOverlayAll(allCells);
         allPossibleMoves.Clear();
         allDefendedCells.Clear();
         whiteAttackedCells.Clear();
@@ -226,6 +225,7 @@ public class PieceManager : MonoBehaviour
     public void ShowAssist()
     {
         HideAssist();
+        var attackedAndDefended = new List<Cell>();
 
         foreach (BasePiece piece in mWhitePieces)
             if (piece.gameObject.activeSelf)  // Make sure piece not defeated
@@ -239,15 +239,32 @@ public class PieceManager : MonoBehaviour
                 allPossibleMoves.UnionWith(piece.mHighlightedCells);  // TODO: integrate within prev. loops to reduce redundancy
             }
 
-        if (Settings.GetPlayer(isBlackTurn).showDanger)
-            Cell.SetOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, OutlineState.Danger);
         if (Settings.GetPlayer(isBlackTurn).showCaptures)
             Cell.SetOutlineAll(isBlackTurn ? whiteAttackedCells : blackAttackedCells, OutlineState.Capture);
         if (Settings.GetPlayer(isBlackTurn).showAllMoves)
             Cell.SetBackgroundAll(allPossibleMoves, isBlackTurn ? Globals.red : Globals.blue, 100);
-        //Cell.SetOutlineAll(allPinnedCells, OutlineState.Warning);  // TODO: will be a overlay later
-        if (Settings.GetPlayer(isBlackTurn).showDefended)
+        if (Settings.GetPlayer(isBlackTurn).showDanger) {
+            var allAttackedCells = whiteAttackedCells.Concat(blackAttackedCells).ToList();
+            foreach (var cell in allDefendedCells.ToList()) {
+                if (allAttackedCells.Contains(cell)) {
+                    attackedAndDefended.Add(cell);
+                    // TODO: will there be consequences mutating this var?
+                    allDefendedCells.Remove(cell);
+                    allAttackedCells.Remove(cell);
+                    whiteAttackedCells.Remove(cell);
+                    blackAttackedCells.Remove(cell);
+                }
+            }
+
+            Cell.SetOutlineAll(isBlackTurn ? blackAttackedCells : whiteAttackedCells, OutlineState.Danger);
+            Cell.SetOverlayAll(allAttackedCells, OverlayType.Sword);
+        }
+        if (Settings.GetPlayer(isBlackTurn).showDefended) {
+            Cell.SetOverlayAll(attackedAndDefended, OverlayType.PartialShield);
             Cell.SetOverlayAll(allDefendedCells, OverlayType.Shield);
+        } else if (Settings.GetPlayer(isBlackTurn).showDanger) {
+            Cell.SetOverlayAll(attackedAndDefended, OverlayType.Sword);
+        }
         if (Settings.GetPlayer(isBlackTurn).showPinned)
             Cell.SetOverlayAll(allPinnedCells, OverlayType.Pin);
     }
