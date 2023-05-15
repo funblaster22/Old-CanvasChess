@@ -244,8 +244,12 @@ public class PieceManager : MonoBehaviour
         if (Settings.GetPlayer(isBlackTurn).showAllMoves)
             Cell.SetBackgroundAll(allPossibleMoves, isBlackTurn ? Globals.red : Globals.blue, 100);
         if (Settings.GetPlayer(isBlackTurn).showDanger) {
+            // Known issue: only works properly when all assist options enabled
+            // TODO: move this logic to compute before assists rendered. Split attackedAndDefended into "whiteAttackedAndDefended" & "blackAttackedAndDefended"
+            // However, when I tried, PartialShield stopped working :(
             var allAttackedCells = whiteAttackedCells.Concat(blackAttackedCells).ToList();
-            foreach (var cell in allDefendedCells.ToList()) {
+            for (int i=allDefendedCells.Count() - 1; i>=0; i--) {
+                var cell = allDefendedCells[i];
                 if (allAttackedCells.Contains(cell)) {
                     attackedAndDefended.Add(cell);
                     // TODO: will there be consequences mutating this var?
