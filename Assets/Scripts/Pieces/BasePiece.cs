@@ -233,6 +233,16 @@ public abstract class BasePiece : EventTrigger
     #endregion
 
     #region Events
+    private void ResetMobileHUD() {
+        if (Input.touchCount >= 1) {
+            var cell = mTargetCell != null ? mTargetCell : cellBeforeDrag;
+            var hud = cell.gameObject.transform.GetChild(1);
+            hud.localScale = Vector3.one;
+            // As goofy as this assignment looks, it is nessisary. localPosition places in center of cell
+            hud.GetChild(1).gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+        }
+    }
+
     private bool CheckEntry(Cell cell)
     {
         var prevCell = mTargetCell;
@@ -310,6 +320,10 @@ public abstract class BasePiece : EventTrigger
         }
 
         // If the mouse is not within any highlighted cell, we don't have a valid move.
+
+        // Rescale HUD
+        ResetMobileHUD();
+
         mTargetCell = null;
     }
 
@@ -323,13 +337,7 @@ public abstract class BasePiece : EventTrigger
         actualHighlightedCells = mHighlightedCells;
 
         // Rescale HUD
-        if (Input.touchCount >= 1) {
-            var cell = mTargetCell != null ? mTargetCell : cellBeforeDrag;
-            var hud = cell.gameObject.transform.GetChild(1);
-            hud.localScale = Vector3.one;
-            // As goofy as this assignment looks, it is nessisary. localPosition places in center of cell
-            hud.GetChild(1).gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
-        }
+        ResetMobileHUD();
 
         // Return to original position
         if (!mTargetCell || mTargetCell == cellBeforeDrag)
