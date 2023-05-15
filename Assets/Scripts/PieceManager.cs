@@ -212,6 +212,8 @@ public class PieceManager : MonoBehaviour
             piece.enabled = isPartOfTeam;
         }
 
+        (isBlackTurn ? mBlackPieces : mWhitePieces).ForEach(piece => piece.StartTurn());
+
         // ADDED: Move random piece
         /*
         if (isBlackTurn)

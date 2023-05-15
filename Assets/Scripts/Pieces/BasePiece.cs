@@ -292,6 +292,11 @@ public abstract class BasePiece : EventTrigger
         return false;
     }
 
+    public void StartTurn() {
+        if (ghostPiece != null)
+            Destroy(ghostPiece);
+    }
+
     public override void OnBeginDrag(PointerEventData eventData)
     {
         base.OnBeginDrag(eventData);
