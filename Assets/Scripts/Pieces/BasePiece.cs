@@ -14,6 +14,8 @@ public abstract class BasePiece : EventTrigger
     abstract public int Value { get; }
     public bool IsAlive => gameObject.activeInHierarchy;
 
+    private GameObject ghostPiece;
+
     protected Cell mOriginalCell = null;  // Cell that piece belongs in at the start of a new game
     protected Cell mCurrentCell = null;
     protected Cell cellBeforeDrag = null;
@@ -296,6 +298,15 @@ public abstract class BasePiece : EventTrigger
         actualHighlightedCells = new List<Cell>(mHighlightedCells);
         temporarlyCaptured = null;
 
+        // Ghost piece
+        if (ghostPiece != null)
+            Destroy(ghostPiece);
+        ghostPiece = Instantiate(gameObject, transform.parent);
+        ghostPiece.transform.localPosition = transform.localPosition;
+        ghostPiece.GetComponent<BasePiece>().enabled = false;
+        var img = ghostPiece.GetComponent<Image>();
+        img.color = new Color(img.color.r, img.color.g, img.color.b, 0.5f);
+
         // Show valid cells
         if (Settings.GetPlayer(mColor == Color.black).showCurrentMove)
         {  // TODO: reduce redundancy with CheckEntry
@@ -347,6 +358,8 @@ public abstract class BasePiece : EventTrigger
             Move();
             UndoCapture();
             mPieceManager.ShowAssist();
+            if (ghostPiece != null)
+                Destroy(ghostPiece);
             return;
         }
 
