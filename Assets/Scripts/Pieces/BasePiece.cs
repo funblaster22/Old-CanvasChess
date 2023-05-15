@@ -156,8 +156,11 @@ public abstract class BasePiece : EventTrigger
             }
 
             // If friendly, add to list, break
-            if (cellState == CellState.Friendly)
-                mPieceManager.allDefendedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+            if (cellState == CellState.Friendly) {
+                var cell = mCurrentCell.mBoard.mAllCells[currentX, currentY];
+                if (cell.mCurrentPiece is not King)
+                    mPieceManager.allDefendedCells.Add(cell);
+            }
 
             // If the cell is not free, break
             if (cellState != CellState.Free)

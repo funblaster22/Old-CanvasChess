@@ -34,7 +34,7 @@ public class Pawn : BasePiece
             Cell cell = mCurrentCell.mBoard.mAllCells[targetX, targetY];
 
             if (targetState == CellState.Enemy) {  // When checking corners
-                if (cellState == CellState.Friendly)  // Is defended
+                if (cellState == CellState.Friendly && cell.mCurrentPiece is not King)  // Is defended
                     mPieceManager.allDefendedCells.Add(cell);
                 else if (cellState == CellState.Enemy)  // Is attacking
                     (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells).Add(cell);

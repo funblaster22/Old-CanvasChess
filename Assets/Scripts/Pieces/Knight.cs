@@ -56,7 +56,7 @@ public class Knight : BasePiece
         {
             Cell cell = mCurrentCell.mBoard.mAllCells[targetX, targetY];
 
-            if (cellState == CellState.Friendly)  // Is defended
+            if (cellState == CellState.Friendly && cell.mCurrentPiece is not King)  // Is defended
                 mPieceManager.allDefendedCells.Add(cell);
             else  // Is a legal move
             {
