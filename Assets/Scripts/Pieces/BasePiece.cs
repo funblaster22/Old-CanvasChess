@@ -235,6 +235,7 @@ public abstract class BasePiece : EventTrigger
     #region Events
     private bool CheckEntry(Cell cell)
     {
+        var prevCell = mTargetCell;
         if (RectTransformUtility.RectangleContainsScreenPoint(cell.mRectTransform, Input.mousePosition))
             //TODO: account for begining cell RectTransformUtility.RectangleContainsScreenPoint(cellBeforeDrag.mRectTransform, Input.mousePosition)
             {
@@ -244,6 +245,17 @@ public abstract class BasePiece : EventTrigger
                 mTargetCell = cell;
                 // Set the state of the new cell
                 Move(true);
+
+                if (Input.touchCount >= 1 && mTargetCell != prevCell) {
+                    var targetHud = mTargetCell.gameObject.transform.GetChild(1);
+                    targetHud.localScale = Vector3.one * 1.5f;
+                    targetHud.GetChild(1).gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.up * 100;
+                    if (prevCell != null) {
+                        var prevHud = prevCell.gameObject.transform.GetChild(1);
+                        prevHud.localScale = Vector3.one;
+                        prevHud.GetChild(1).gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+                    }
+                }
 
                 // Restore the state of the cell you're leaving
                 UndoCapture();
@@ -309,6 +321,15 @@ public abstract class BasePiece : EventTrigger
         Cell.ClearBackgroundAll(actualHighlightedCells);
         cellBeforeDrag.background.enabled = false;
         actualHighlightedCells = mHighlightedCells;
+
+        // Rescale HUD
+        if (Input.touchCount >= 1) {
+            var cell = mTargetCell != null ? mTargetCell : cellBeforeDrag;
+            var hud = cell.gameObject.transform.GetChild(1);
+            hud.localScale = Vector3.one;
+            // As goofy as this assignment looks, it is nessisary. localPosition places in center of cell
+            hud.GetChild(1).gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+        }
 
         // Return to original position
         if (!mTargetCell || mTargetCell == cellBeforeDrag)
