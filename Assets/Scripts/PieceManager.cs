@@ -23,6 +23,7 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> mPromotedPieces = new List<BasePiece>();
     private Cell[,] cells;
     private bool isBlackTurn = false;
+    public bool isTwoPlayer;
 
     [HideInInspector]
     public List<Cell> allDefendedCells = new();  // Is a list instead of HashSet b/c need to know how well defended each piece is
@@ -81,6 +82,7 @@ public class PieceManager : MonoBehaviour
                     gamePiece.Place(board.mAllCells[piece.position.x, piece.position.y], false);
             }
             mIsKingAlive = true;
+            isTwoPlayer = game.isTwoPlayer;
             SwitchSides(game.isBlackTurn ? Color.white : Color.black);
         } else
         {
@@ -144,7 +146,6 @@ public class PieceManager : MonoBehaviour
             piece.enabled = value;
     }
 
-    /*
     private void MoveRandomPiece()
     {
         BasePiece finalPiece = null;
@@ -166,7 +167,6 @@ public class PieceManager : MonoBehaviour
 
         finalPiece.ComputerMove();
     }
-    */
 
     public void SwitchSides(Color color)
     {
@@ -214,11 +214,8 @@ public class PieceManager : MonoBehaviour
 
         (isBlackTurn ? mBlackPieces : mWhitePieces).ForEach(piece => piece.StartTurn());
 
-        // ADDED: Move random piece
-        /*
-        if (isBlackTurn)
+        if (isBlackTurn && !isTwoPlayer)
             MoveRandomPiece();
-        */
     }
 
     public void HideAssist()

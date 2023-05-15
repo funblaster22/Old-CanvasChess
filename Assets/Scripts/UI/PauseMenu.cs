@@ -44,12 +44,16 @@ public class PauseMenu : MonoBehaviour
         gameOngoing = true;
     }
 
-    public void New2P()
-    {
+    private void NewGame(bool isTwoPlayer) {
         Resume();
         pieceManager.ResetPieces();
+        pieceManager.isTwoPlayer = isTwoPlayer;
         pieceManager.SwitchSides(Color.black);
     }
+
+    public void New2P() => NewGame(true);
+
+    public void New1P() => NewGame(false);
 
     void Pause()
     {

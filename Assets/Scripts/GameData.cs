@@ -7,6 +7,7 @@ public class GameData
 {
     public bool isBlackTurn;
     public List<PieceData> pieces;
+    public bool isTwoPlayer;
     public Settings whiteSettings = Settings.white;
     public Settings blackSettings = Settings.black;
 
