@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using UnityEngine.UI;
 
 public class PieceManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PieceManager : MonoBehaviour
     public bool mIsKingAlive = true;
 
     public GameObject mPiecePrefab;
+    public Text whiteScore;
+    public Text blackScore;
 
     private List<BasePiece> mWhitePieces = null;
     private List<BasePiece> mBlackPieces = null;
@@ -23,7 +26,9 @@ public class PieceManager : MonoBehaviour
 
     [HideInInspector]
     public List<Cell> allDefendedCells = new();  // Is a list instead of HashSet b/c need to know how well defended each piece is
+    [HideInInspector]
     public List<Cell> whiteAttackedCells = new();
+    [HideInInspector]
     public List<Cell> blackAttackedCells = new();
     public HashSet<Cell> allPossibleMoves = new HashSet<Cell>();  // Only applies to current player
     public HashSet<Cell> allPinnedCells = new HashSet<Cell>();
@@ -176,6 +181,11 @@ public class PieceManager : MonoBehaviour
             // Change color to black, so white can go first again
             color = Color.black;
         }
+
+        // Calculate Score
+        static int summer(BasePiece piece) => piece.IsAlive ? piece.Value : 0;
+        whiteScore.text = mWhitePieces.Sum(summer).ToString();
+        blackScore.text = mBlackPieces.Sum(summer).ToString();
 
         isBlackTurn = color == Color.white;
 

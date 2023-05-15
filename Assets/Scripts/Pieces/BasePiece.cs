@@ -12,6 +12,7 @@ public abstract class BasePiece : EventTrigger
     public List<Cell> mHighlightedCells = new List<Cell>();  // Highlighted cells that the player can move to in 2 turns // TODO: rename to 'previewHighlightedCells'
     public List<Cell> actualHighlightedCells = null;  // Highighted cells that the player can move to
     abstract public int Value { get; }
+    public bool IsAlive => gameObject.activeInHierarchy;
 
     protected Cell mOriginalCell = null;  // Cell that piece belongs in at the start of a new game
     protected Cell mCurrentCell = null;
