@@ -5,10 +5,10 @@ using UnityEngine;
 // Adapted from https://youtu.be/JivuXdrIHK0 (Brackeys)
 public class PauseMenu : MonoBehaviour
 {
-    // TODO: have buttons to start new 1P or 2P
     public static bool isPaused = true;
     protected static bool gameOngoing = false;
 
+    public GameObject credits;
     public GameObject pauseMenuUI;
     public GameObject resumeButton;
     public GameObject pauseButton;
@@ -64,6 +64,10 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 0f;
         isPaused = true;
         Debug.Log("Pause!");
+    }
+
+    public void ToggleCredits() {
+        credits.SetActive(!credits.activeInHierarchy);
     }
 
     public void Quit()
