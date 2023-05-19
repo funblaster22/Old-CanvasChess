@@ -11,6 +11,7 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
     public GameObject resumeButton;
+    public GameObject pauseButton;
     public PieceManager pieceManager;
 
     void Start()
@@ -38,6 +39,7 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         resumeButton.SetActive(true);
+        pauseButton.SetActive(true);
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
@@ -55,16 +57,19 @@ public class PauseMenu : MonoBehaviour
 
     public void New1P() => NewGame(false);
 
-    void Pause()
+    public void Pause()
     {
+        pauseButton.SetActive(false);
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
+        Debug.Log("Pause!");
     }
 
     public void Quit()
     {
         print("Quitting game...");
+        Screen.fullScreen = false;
         Application.Quit();
     }
 }
