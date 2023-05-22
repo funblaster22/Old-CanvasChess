@@ -30,6 +30,7 @@ public class PieceManager : MonoBehaviour
     private Cell[,] cells;
     private bool isBlackTurn = false;
     public bool isTwoPlayer;
+    public bool ShouldRotate { get; set; } = true;
 
     [HideInInspector]
     public List<Cell> allDefendedCells = new();  // Is a list instead of HashSet b/c need to know how well defended each piece is
@@ -198,7 +199,11 @@ public class PieceManager : MonoBehaviour
         isBlackTurn = color == Color.white;
 
         // Rotate board
-        foreach (var rotatable in GameObject.FindGameObjectsWithTag("Rotatable")) {
+        IEnumerable<GameObject> needsRotate = GameObject.FindGameObjectsWithTag("Piece");
+        if (ShouldRotate) {
+            needsRotate = needsRotate.Concat(GameObject.FindGameObjectsWithTag("Rotatable"));
+        }
+        foreach (var rotatable in needsRotate) {
             rotatable.transform.localEulerAngles = new Vector3(0, 0, isBlackTurn ? 180 : 0);
         }
 
