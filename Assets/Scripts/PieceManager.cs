@@ -17,6 +17,9 @@ public class PieceManager : MonoBehaviour
     public Text whiteScore;
     public Text blackScore;
 
+    public Transform whiteJail;
+    public Transform blackJail;
+
     private List<BasePiece> mWhitePieces = null;
     private List<BasePiece> mBlackPieces = null;
     public List<BasePiece> AllPieces
@@ -301,6 +304,12 @@ public class PieceManager : MonoBehaviour
 
         foreach (BasePiece piece in mBlackPieces)
             piece.Reset();
+
+        // Release the prisioners
+        foreach (Transform prisioner in whiteJail)
+            Destroy(prisioner.gameObject);
+        foreach (Transform prisioner in blackJail)
+            Destroy(prisioner.gameObject);
 
         File.Delete(SaveSystem.savePath);
     }

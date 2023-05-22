@@ -75,6 +75,11 @@ public abstract class BasePiece : EventTrigger
         // Clear current cell
         mCurrentCell.mCurrentPiece = null;
 
+        // Put in jail
+        Transform jail = isBlack ? mPieceManager.whiteJail : mPieceManager.blackJail;
+        GameObject jailedPiece = Instantiate(gameObject, jail);
+        jailedPiece.GetComponent<BasePiece>().enabled = false;
+
         // Remove piece
         gameObject.SetActive(false);
     }
