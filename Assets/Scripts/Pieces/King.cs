@@ -106,7 +106,7 @@ public class King : BasePiece
 
         // Add target cell to highlighed cells
         if (rook != null)
-            mHighlightedCells.Add(rook.mCastleTriggerCell);
+            previewHighlightedCells.Add(rook.mCastleTriggerCell);
 
         return rook;
     }

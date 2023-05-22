@@ -40,7 +40,7 @@ public class Pawn : BasePiece
                     (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells).Add(cell);
             }
             if (cellState == targetState) {
-                mHighlightedCells.Add(cell);  // TODO: only add attackable cells to allHighlighted
+                previewHighlightedCells.Add(cell);  // TODO: only add attackable cells to allHighlighted
                 return true;
             }
         }
@@ -66,7 +66,7 @@ public class Pawn : BasePiece
 
     public override void CheckPathing()
     {
-        mHighlightedCells.Clear();
+        previewHighlightedCells.Clear();
 
         // Target position
         int currentX = mCurrentCell.mBoardPosition.x;

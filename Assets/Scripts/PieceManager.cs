@@ -248,7 +248,7 @@ public class PieceManager : MonoBehaviour
         foreach (BasePiece piece in (isBlackTurn ? mBlackPieces : mWhitePieces))  // Find all possible moves
             if (piece.gameObject.activeSelf) {
                 allPossibleMoves.Add(piece.CurrentCell);
-                allPossibleMoves.UnionWith(piece.mHighlightedCells);  // TODO: integrate within prev. loops to reduce redundancy
+                allPossibleMoves.UnionWith(piece.previewHighlightedCells);  // TODO: integrate within prev. loops to reduce redundancy
             }
 
         if (Settings.GetPlayer(isBlackTurn).showCaptures)

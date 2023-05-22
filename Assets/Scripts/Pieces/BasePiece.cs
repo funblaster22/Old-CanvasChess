@@ -10,9 +10,9 @@ public abstract class BasePiece : EventTrigger
     private bool isBlack;
     public bool mIsFirstMove = true;
     /// <summary>Highlighted cells that the player can move to in 2 turns</summary>
-    public List<Cell> mHighlightedCells = new List<Cell>();  // TODO: rename to 'previewHighlightedCells'
+    public List<Cell> previewHighlightedCells = new List<Cell>();
     /// <summary>Highighted cells that the player can move to</summary>
-    public List<Cell> actualHighlightedCells = null;
+    public List<Cell> highlightedCells = null;
     abstract public int Value { get; }
     public bool IsAlive => gameObject.activeInHierarchy;
 
@@ -84,7 +84,7 @@ public abstract class BasePiece : EventTrigger
         CheckPathing();
 
         // If no moves
-        if (mHighlightedCells.Count == 0)
+        if (previewHighlightedCells.Count == 0)
             return false;
 
         // If moves available
@@ -94,8 +94,8 @@ public abstract class BasePiece : EventTrigger
     public void ComputerMove()
     {
         // Get random cell
-        int i = Random.Range(0, mHighlightedCells.Count);
-        mTargetCell = mHighlightedCells[i];
+        int i = Random.Range(0, previewHighlightedCells.Count);
+        mTargetCell = previewHighlightedCells[i];
 
         // Move to new cell
         Move();
@@ -125,7 +125,7 @@ public abstract class BasePiece : EventTrigger
             if (cellState == CellState.Enemy)
             {
                 Cell firstHit = mCurrentCell.mBoard.mAllCells[currentX, currentY];
-                mHighlightedCells.Add(firstHit);
+                previewHighlightedCells.Add(firstHit);
                 (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells)
                     .Add(firstHit);
                 // Check for pieces that are pinned behind this one
@@ -163,13 +163,13 @@ public abstract class BasePiece : EventTrigger
                 break;
 
             // Add to list
-            mHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
+            previewHighlightedCells.Add(mCurrentCell.mBoard.mAllCells[currentX, currentY]);
         }
     }
 
     public virtual void CheckPathing()
     {
-        mHighlightedCells.Clear();
+        previewHighlightedCells.Clear();
 
         // Horizontal
         CreateCellPath(1, 0, mMovement.x);
@@ -277,8 +277,8 @@ public abstract class BasePiece : EventTrigger
                 Settings mySettings = Settings.GetPlayer(isBlack);
                 mPieceManager.ShowAssist();
                 if (mySettings.showCurrentMove) {
-                    mHighlightedCells.Add(mTargetCell);  // Use mHeilighted or actualHighlighted?
-                    Cell.SetBackgroundAll(actualHighlightedCells, isBlack ? Globals.red : Globals.blue, 200);
+                    previewHighlightedCells.Add(mTargetCell);  // Use mHeilighted or actualHighlighted?
+                    Cell.SetBackgroundAll(highlightedCells, isBlack ? Globals.red : Globals.blue, 200);
                     cellBeforeDrag.SetBackground(isBlack ? Globals.red : Globals.blue, 200);
                 }
             }
@@ -299,7 +299,7 @@ public abstract class BasePiece : EventTrigger
 
         // Remember which cell the piece started in
         cellBeforeDrag = mCurrentCell;
-        actualHighlightedCells = new List<Cell>(mHighlightedCells);
+        highlightedCells = new List<Cell>(previewHighlightedCells);
         temporarlyCaptured = null;
 
         // Ghost piece
@@ -314,7 +314,7 @@ public abstract class BasePiece : EventTrigger
         // Show valid cells
         if (Settings.GetPlayer(mColor == Color.black).showCurrentMove)
         {  // TODO: reduce redundancy with CheckEntry
-            Cell.SetBackgroundAll(actualHighlightedCells, isBlack ? Globals.red : Globals.blue, 200);
+            Cell.SetBackgroundAll(highlightedCells, isBlack ? Globals.red : Globals.blue, 200);
             cellBeforeDrag.SetBackground(isBlack ? Globals.red : Globals.blue, 200);
         }
     }
@@ -328,7 +328,7 @@ public abstract class BasePiece : EventTrigger
 
         // Check for overlapping available squares
         if (CheckEntry(cellBeforeDrag)) return;
-        foreach (Cell cell in actualHighlightedCells)
+        foreach (Cell cell in highlightedCells)
         {
             if (CheckEntry(cell))
                 return;
@@ -347,9 +347,9 @@ public abstract class BasePiece : EventTrigger
         base.OnEndDrag(eventData);
 
         // Hide
-        Cell.ClearBackgroundAll(actualHighlightedCells);
+        Cell.ClearBackgroundAll(highlightedCells);
         cellBeforeDrag.background.enabled = false;
-        actualHighlightedCells = mHighlightedCells;
+        highlightedCells = previewHighlightedCells;
 
         // Rescale HUD
         ResetMobileHUD();

@@ -38,7 +38,7 @@ public class Knight : BasePiece
     // New
     public override void CheckPathing()
     {
-        mHighlightedCells.Clear();
+        previewHighlightedCells.Clear();
 
         // Draw top half
         CreateCellPath(1);
@@ -62,7 +62,7 @@ public class Knight : BasePiece
             {
                 if (cellState == CellState.Enemy)  // Is attacking
                     (mColor == Color.white ? mPieceManager.blackAttackedCells : mPieceManager.whiteAttackedCells).Add(cell);
-                mHighlightedCells.Add(cell);
+                previewHighlightedCells.Add(cell);
             }
         }
     }
