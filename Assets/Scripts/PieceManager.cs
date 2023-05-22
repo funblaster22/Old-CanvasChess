@@ -9,6 +9,9 @@ public class PieceManager : MonoBehaviour
 {
     [HideInInspector]
     public bool mIsKingAlive = true;
+    public bool KingInDanger => (isBlackTurn ? blackAttackedCells : whiteAttackedCells).Contains(
+        (isBlackTurn ? mBlackPieces : mWhitePieces).Find(piece => piece is King).CurrentCell
+    );
 
     public GameObject mPiecePrefab;
     public Text whiteScore;

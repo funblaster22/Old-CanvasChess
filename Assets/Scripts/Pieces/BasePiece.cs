@@ -9,38 +9,34 @@ public abstract class BasePiece : EventTrigger
     public Color mColor = Color.clear;
     private bool isBlack;
     public bool mIsFirstMove = true;
-    public List<Cell> mHighlightedCells = new List<Cell>();  // Highlighted cells that the player can move to in 2 turns // TODO: rename to 'previewHighlightedCells'
-    public List<Cell> actualHighlightedCells = null;  // Highighted cells that the player can move to
+    /// <summary>Highlighted cells that the player can move to in 2 turns</summary>
+    public List<Cell> mHighlightedCells = new List<Cell>();  // TODO: rename to 'previewHighlightedCells'
+    /// <summary>Highighted cells that the player can move to</summary>
+    public List<Cell> actualHighlightedCells = null;
     abstract public int Value { get; }
     public bool IsAlive => gameObject.activeInHierarchy;
 
     private GameObject ghostPiece;
 
-    protected Cell mOriginalCell = null;  // Cell that piece belongs in at the start of a new game
+    // TODO: document why there are 4 different Cells
+    /// <summary>Cell that piece belongs in at the start of a new game</summary>
+    protected Cell mOriginalCell = null;
     protected Cell mCurrentCell = null;
     protected Cell cellBeforeDrag = null;
+    /// <summary>Cell that player is dragging over</summary>
+    protected Cell mTargetCell = null;
 
     protected RectTransform mRectTransform = null;
     protected PieceManager mPieceManager;
 
-    protected Cell mTargetCell = null;  // Cell that player is dragging over
     protected BasePiece temporarlyCaptured = null;
 
     protected Vector3Int mMovement = Vector3Int.one;
 
-    public Cell CurrentCell
-     {
-        get
-        {
-            return mCurrentCell;
-        }
-    }
+    // TODO: merge these definitions with their protected fields { get; protected set; }
+    public Cell CurrentCell => mCurrentCell;
 
-    public Cell OriginalCell {
-        get {
-            return mOriginalCell;
-        }
-    }
+    public Cell OriginalCell => mOriginalCell;
 
     public virtual void Setup(Color newTeamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
@@ -359,7 +355,7 @@ public abstract class BasePiece : EventTrigger
         ResetMobileHUD();
 
         // Return to original position
-        if (!mTargetCell || mTargetCell == cellBeforeDrag)
+        if (!mTargetCell || mTargetCell == cellBeforeDrag || mPieceManager.KingInDanger)
         {
             transform.position = mCurrentCell.gameObject.transform.position;
             mTargetCell = cellBeforeDrag;
@@ -375,7 +371,7 @@ public abstract class BasePiece : EventTrigger
         Move();
 
         // End turn
-        SaveSystem.SaveGame(!isBlack, mPieceManager.AllPieces);
+        SaveSystem.SaveGame(!isBlack, mPieceManager.isTwoPlayer, mPieceManager.AllPieces);
         mPieceManager.SwitchSides(mColor);
     }
     #endregion

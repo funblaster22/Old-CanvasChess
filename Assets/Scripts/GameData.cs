@@ -11,9 +11,10 @@ public class GameData
     public Settings whiteSettings = Settings.white;
     public Settings blackSettings = Settings.black;
 
-    public GameData(bool isBlackTurn, List<BasePiece> pieces)
+    public GameData(bool isBlackTurn, bool isTwoPlayer, List<BasePiece> pieces)
     {
         this.isBlackTurn = isBlackTurn;
+        this.isTwoPlayer = isTwoPlayer;
         this.pieces = new List<PieceData>();
         foreach (BasePiece piece in pieces)
             this.pieces.Add(new PieceData(piece));

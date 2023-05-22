@@ -8,12 +8,12 @@ public static class SaveSystem
 {
     public static readonly string savePath = Application.persistentDataPath + "/chess.game";
 
-    public static void SaveGame(bool isBlackTurn, List<BasePiece> pieces)
+    public static void SaveGame(bool isBlackTurn, bool isTwoPlayer, List<BasePiece> pieces)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream stream = new FileStream(savePath, FileMode.Create);
 
-        GameData data = new GameData(isBlackTurn, pieces);
+        GameData data = new GameData(isBlackTurn, isTwoPlayer, pieces);
 
         formatter.Serialize(stream, data);
         stream.Close();
