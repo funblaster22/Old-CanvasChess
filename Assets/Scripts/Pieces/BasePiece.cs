@@ -75,13 +75,17 @@ public abstract class BasePiece : EventTrigger
         // Clear current cell
         mCurrentCell.mCurrentPiece = null;
 
-        // Put in jail
-        Transform jail = isBlack ? mPieceManager.whiteJail : mPieceManager.blackJail;
-        GameObject jailedPiece = Instantiate(gameObject, jail);
-        jailedPiece.GetComponent<BasePiece>().enabled = false;
-
         // Remove piece
         gameObject.SetActive(false);
+    }
+
+    public void Jail() {
+        Transform jail = isBlack ? mPieceManager.blackJail : mPieceManager.whiteJail;
+        GameObject jailedPiece = Instantiate(gameObject, jail);
+        jailedPiece.SetActive(true);
+        jailedPiece.tag = "Untagged";
+        jailedPiece.transform.localEulerAngles = Vector3.zero;
+        jailedPiece.GetComponent<BasePiece>().enabled = false;
     }
 
     public bool HasMove()
@@ -374,6 +378,8 @@ public abstract class BasePiece : EventTrigger
 
         // Move to new cell
         Move();
+        if (temporarlyCaptured)
+            temporarlyCaptured.Jail();
 
         // End turn
         SaveSystem.SaveGame(!isBlack, mPieceManager.isTwoPlayer, mPieceManager.AllPieces);

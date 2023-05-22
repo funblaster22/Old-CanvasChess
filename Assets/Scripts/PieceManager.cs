@@ -86,6 +86,8 @@ public class PieceManager : MonoBehaviour
                 // Place
                 if (!piece.isDefeated)
                     gamePiece.Place(board.mAllCells[piece.position.x, piece.position.y], false);
+                else
+                    gamePiece.Jail();
             }
             mIsKingAlive = true;
             isTwoPlayer = game.isTwoPlayer;
