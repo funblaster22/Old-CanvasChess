@@ -83,7 +83,8 @@ public abstract class BasePiece : EventTrigger
         Transform jail = isBlack ? mPieceManager.blackJail : mPieceManager.whiteJail;
         GameObject jailedPiece = Instantiate(gameObject, jail);
         jailedPiece.SetActive(true);
-        jailedPiece.tag = "Untagged";
+        if (!mPieceManager.ShouldRotate)
+            jailedPiece.tag = "Untagged";
         jailedPiece.transform.localEulerAngles = Vector3.zero;
         jailedPiece.GetComponent<BasePiece>().enabled = false;
     }
