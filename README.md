@@ -1,8 +1,8 @@
 ## Assist Chess
 
-Play on [itch.io](https://funblaster22.itch.io/assist-chess)!
+Play on [itch.io](https://funblaster22.itch.io/assist-chess) or the [Google Play Store](https://play.google.com/store/apps/details?id=com.Dawes.AssistChess)!
 
-Massive thanks to [@C-Through](https://github.com/C-Through) for the chess starter project
+Massive thanks to [@VRwithAndrew](https://github.com/VRwithAndrew) for the [chess starter project](https://play.google.com/store/apps/details?id=com.Dawes.AssistChess)
 
 _Assist Chess_ is intended for beginner to intermediate players to help them make the best move.
 Too often have I lost a lost a chess piece or made a dumb move because I couldn't see that it was being attacked.
